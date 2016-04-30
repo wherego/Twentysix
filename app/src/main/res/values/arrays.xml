@@ -1,0 +1,7 @@
+<resources>
+    <array name="home_list">
+        <item>News</item>
+        <item>WeChat</item>
+        <item>Girls</item>
+    </array>
+</resources>

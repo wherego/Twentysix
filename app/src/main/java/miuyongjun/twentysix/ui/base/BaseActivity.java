@@ -12,7 +12,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class BaseActivity extends AppCompatActivity {
 
-//    public static final GankApi sGankIO = DrakeetFactory.getGankIOSingleton();
 
     private CompositeSubscription mCompositeSubscription;
 

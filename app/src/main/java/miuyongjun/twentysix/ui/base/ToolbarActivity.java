@@ -23,7 +23,8 @@ public abstract class ToolbarActivity extends BaseActivity {
     protected boolean mIsHidden = false;
 
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(provideContentViewId());
         mAppBar = (AppBarLayout) findViewById(R.id.app_bar_layout);
@@ -40,23 +41,26 @@ public abstract class ToolbarActivity extends BaseActivity {
             if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            mAppBar.setElevation(10.6f);
-        }
     }
 
+
+    public void setAppBarElevation(float elevation) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            mAppBar.setElevation(elevation);
+        }
+    }
 
     public boolean canBack() {
         return false;
     }
 
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        }
-        else {
+        } else {
             return super.onOptionsItemSelected(item);
         }
     }

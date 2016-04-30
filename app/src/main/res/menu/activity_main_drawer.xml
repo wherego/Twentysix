@@ -5,29 +5,30 @@
         android:id="@+id/fragment_group"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
-            android:title="即时新闻"/>
+            android:title="Home"/>
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_health"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="微信精选"/>
+            android:title="Health"/>
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="美女图片"/>
+            android:title="Girls"/>
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Gank"/>
     </group>
 
-    <group android:id="@+id/grp2"
-           android:checkableBehavior="single">
+    <group
+        android:id="@+id/grp2"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_item_2"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Setting" />
+            android:title="Setting"/>
     </group>
 
 </menu>
