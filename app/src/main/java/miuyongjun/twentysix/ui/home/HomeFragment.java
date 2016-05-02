@@ -16,11 +16,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.common.CommonFragmentPagerAdapter;
+import miuyongjun.twentysix.ui.girls.GirlsFragment;
 import miuyongjun.twentysix.ui.news.NewsFragment;
+import miuyongjun.twentysix.ui.wxhot.WXHotFragment;
 
 /**
  * Created by miaoyongjun on 2016/4/30.
- *    　　　　 　┃┫┫　┃┫┫
+ * 　　　　 　┃┫┫　┃┫┫
  * 　　　　    　┗┻┛　┗┻┛
  */
 public class HomeFragment extends Fragment {
@@ -51,10 +53,13 @@ public class HomeFragment extends Fragment {
     private void initData() {
         tabTitles = getActivity().getResources().getStringArray(R.array.home_list);
         mFragmentList = new ArrayList<>();
-        for (int i = 0; i < tabTitles.length; i++) {
-            NewsFragment newsFragment = new NewsFragment();
-            mFragmentList.add(newsFragment);
-        }
+        NewsFragment newsFragment = new NewsFragment();
+        mFragmentList.add(newsFragment);
+        WXHotFragment wxHotFragment = new WXHotFragment();
+        mFragmentList.add(wxHotFragment);
+        GirlsFragment girlsFragment = new GirlsFragment(false);
+        mFragmentList.add(girlsFragment);
+
     }
 
     private void initViewPager() {

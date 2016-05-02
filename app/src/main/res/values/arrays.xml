@@ -4,4 +4,9 @@
         <item>WeChat</item>
         <item>Girls</item>
     </array>
+    <array name="gank_detail_list">
+        <item>Android</item>
+        <item>IOS</item>
+        <item>扩展资源</item>
+    </array>
 </resources>

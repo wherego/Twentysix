@@ -10,7 +10,7 @@ import miuyongjun.twentysix.common.interfaces.OnLoadListener;
 
 /**
  * Created by miaoyongjun on 2016/4/30.
- *    　　　　 　┃┫┫　┃┫┫
+ * 　　　　 　   ┃┫┫　┃┫┫
  * 　　　　    　┗┻┛　┗┻┛
  */
 public class RecyclerOnScrollEndListener extends RecyclerView.OnScrollListener implements OnLoadListener {
@@ -19,8 +19,6 @@ public class RecyclerOnScrollEndListener extends RecyclerView.OnScrollListener i
     private int[] lastPositions;
 
     private int lastVisibleItemPosition;
-
-    private int currentScrollState = 0;
 
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -62,11 +60,10 @@ public class RecyclerOnScrollEndListener extends RecyclerView.OnScrollListener i
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
-        currentScrollState = newState;
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();
-        if ((visibleItemCount > 0 && currentScrollState == RecyclerView.SCROLL_STATE_IDLE && (lastVisibleItemPosition) >= totalItemCount - 1)) {
+        if ((visibleItemCount > 0 && newState == RecyclerView.SCROLL_STATE_IDLE && (lastVisibleItemPosition) >= totalItemCount - 1)) {
             onLoad(recyclerView);
         }
     }

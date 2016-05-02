@@ -16,8 +16,6 @@ import miuyongjun.twentysix.R;
 public abstract class ToolbarActivity extends BaseActivity {
 
     abstract protected int provideContentViewId();
-
-
     protected AppBarLayout mAppBar;
     protected Toolbar mToolbar;
     protected boolean mIsHidden = false;

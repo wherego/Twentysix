@@ -7,7 +7,11 @@ import java.util.concurrent.TimeUnit;
 
 import miuyongjun.twentysix.api.GankApi;
 import miuyongjun.twentysix.api.NewsApi;
+import miuyongjun.twentysix.api.WXHotApi;
+import miuyongjun.twentysix.bean.gank.GankBaseEntity;
+import miuyongjun.twentysix.bean.gank.GankDateBaseEntity;
 import miuyongjun.twentysix.bean.news.NewsBaseEntity;
+import miuyongjun.twentysix.bean.wechat.WXHotBaseEntity;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -18,13 +22,14 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by miaoyongjun on 2016/4/30.
- *    　　　　 　┃┫┫　┃┫┫
+ * 　　　   　 　┃┫┫　┃┫┫
  * 　　　　    　┗┻┛　┗┻┛
  */
 
 public class RetrofitUtil {
     static NewsApi newsApi;
     static GankApi gankApi;
+    static WXHotApi wxHotApi;
 
     public static Retrofit RetrofitSetting() {
         Gson gson = new GsonBuilder()
@@ -33,29 +38,21 @@ public class RetrofitUtil {
                 .create();
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(5, TimeUnit.SECONDS);
-
-        Retrofit retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .client(builder.build())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl("http://gank.io/api/data/")
                 .build();
-        return retrofit;
     }
 
     /**
      * 使用Transformer封装开启线程的重用方法
-     * */
-    final static Observable.Transformer schedulersTransformer = new Observable.Transformer() {
-        @Override
-        public Object call(Object observable) {
-            return ((Observable) observable).subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread());
-        }
-    };
+     */
 
     static <T> Observable.Transformer<T, T> applySchedulers() {
-        return (Observable.Transformer<T, T>) schedulersTransformer;
+        return observable -> observable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public static Observable<NewsBaseEntity> getNewsApi(String json) {
@@ -65,10 +62,33 @@ public class RetrofitUtil {
         return newsApi.getNewsData(json).compose(RetrofitUtil.<NewsBaseEntity>applySchedulers());
     }
 
-    public static GankApi getGankApi() {
+    public static Observable<WXHotBaseEntity> getWXHotApi(int page) {
+        if (wxHotApi == null) {
+            wxHotApi = RetrofitSetting().create(WXHotApi.class);
+        }
+        return wxHotApi.getWXHotData("10", "1", page + "").compose(RetrofitUtil.<WXHotBaseEntity>applySchedulers());
+    }
+
+    public static Observable<GankBaseEntity> getGirlsApi(String type, int pageIndex) {
         if (gankApi == null) {
             gankApi = RetrofitSetting().create(GankApi.class);
         }
-        return gankApi;
+        return gankApi.getGankData(type, pageIndex).compose(RetrofitUtil.<GankBaseEntity>applySchedulers());
     }
+
+    public static Observable<GankDateBaseEntity> getGankBaseApi(int year, int month, int day) {
+        if (gankApi == null) {
+            gankApi = RetrofitSetting().create(GankApi.class);
+        }
+        return gankApi.getGankDateData(year, month, day).compose(RetrofitUtil.<GankDateBaseEntity>applySchedulers());
+    }
+
+    public static Observable<GankBaseEntity> getGankApi(String type, int pageIndex) {
+        if (gankApi == null) {
+            gankApi = RetrofitSetting().create(GankApi.class);
+        }
+        return gankApi.getGankData(type, pageIndex).compose(RetrofitUtil.<GankBaseEntity>applySchedulers());
+    }
+
+
 }

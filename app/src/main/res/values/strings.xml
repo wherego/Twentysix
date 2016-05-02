@@ -4,4 +4,24 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_share">分享</string>
+    <string name="action_refresh">刷新</string>
+    <string name="action_copy_url">复制链接</string>
+    <string name="action_open_url">打开链接</string>
+    <string name="action_save">保存</string>
+    <string name="share_str">分享</string>
+    <string name="retry">获取数据出错,请重试</string>
+    <string name="tip_open_fail">打开失败，没有找到可以打开该链接的其它应用 :(</string>
+
+    <string name="ask_saving_picture">保存到手机?</string>
+    <string name="picture_has_save_to">图片已保存至 %s 文件夹</string>
+    <string name="gank_io">gank.io</string>
+
+    <!-- Transitions -->
+    <string name="transition_avatar">AvatarTransition</string>
+    <string name="transition_morph_view" translatable="false">morph_view_transition</string>
+    <string name="transition_name" translatable="false">twenty_six_transition</string>
+    <string name="transition_toolbar_name" translatable="false">toolbar_transition</string>
+    <string name="transition_shared_toolbar" translatable="false">shared_toolbar_transition</string>
+
 </resources>
