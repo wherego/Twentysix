@@ -11,12 +11,9 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.Calendar;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import miuyongjun.twentysix.R;
-import miuyongjun.twentysix.common.bus.ChooseDate;
 import miuyongjun.twentysix.ui.base.ToolbarActivity;
 import miuyongjun.twentysix.ui.gank.GankFragment;
 import miuyongjun.twentysix.ui.healthadvisory.HealthAdvisoryFragment;
@@ -84,17 +81,6 @@ public class MainActivity extends ToolbarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_date) {
-            Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int monthOfYear = calendar.get(Calendar.MONTH);
-            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-            android.app.DatePickerDialog pickerDialog = new android.app.DatePickerDialog(
-                    MainActivity.this, (view, year1, monthOfYear1, dayOfMonth1) ->
-                    BusUtil.getBusInstance().post(new ChooseDate(year1, monthOfYear1, dayOfMonth1)), year, monthOfYear, dayOfMonth);
-            pickerDialog.show();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -106,14 +92,10 @@ public class MainActivity extends ToolbarActivity
         setAppBarElevation(10f);
         switch (item.getItemId()) {
             case R.id.nav_home:
-                mToolbar.getMenu().clear();
-                mToolbar.inflateMenu(R.menu.main);
                 setAppBarElevation(0f);
                 fragmentClass = HomeFragment.class;
                 break;
             case R.id.nav_gank:
-                mToolbar.getMenu().clear();
-                mToolbar.inflateMenu(R.menu.gank);
                 fragmentClass = GankFragment.class;
                 break;
             default:

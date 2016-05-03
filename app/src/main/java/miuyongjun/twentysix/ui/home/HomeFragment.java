@@ -45,14 +45,14 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         initData();
-        initViewPager();
         initTabLayout();
     }
 
     private void initData() {
         tabTitles = getActivity().getResources().getStringArray(R.array.home_list);
+
+        tabViewPager.setOffscreenPageLimit(tabTitles.length);
         mFragmentList = new ArrayList<>();
         AndroidFragment androidFragment = new AndroidFragment();
         mFragmentList.add(androidFragment);
@@ -60,13 +60,8 @@ public class HomeFragment extends Fragment {
         mFragmentList.add(wxHotFragment);
         GirlsFragment girlsFragment = new GirlsFragment(false);
         mFragmentList.add(girlsFragment);
-
-    }
-
-    private void initViewPager() {
         mAdapter = new CommonFragmentPagerAdapter(getChildFragmentManager(), tabTitles, mFragmentList);
         tabViewPager.setAdapter(mAdapter);
-        tabViewPager.setOffscreenPageLimit(tabTitles.length);
     }
 
 

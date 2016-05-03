@@ -25,7 +25,6 @@ import rx.schedulers.Schedulers;
  */
 
 public class RetrofitUtil {
-//    static NewsApi newsApi;
     static GankApi gankApi;
     static WXHotApi wxHotApi;
 

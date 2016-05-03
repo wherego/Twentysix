@@ -25,9 +25,6 @@ public class WXHotFragment extends RecyclerBaseFragment {
     WXHotRecyclerViewAdapter wxhotRecyclerViewAdapter;
     List<WXHotEntity> wxHotEntityList = new ArrayList<>();
 
-    @Override
-    public void onViewCreatedBase() {
-    }
 
     @Override
     public void initAdapter() {
@@ -84,10 +81,6 @@ public class WXHotFragment extends RecyclerBaseFragment {
             wxhotRecyclerViewAdapter.removeFootView();
             return;
         }
-        wxhotRecyclerViewAdapter.getFootView().setVisibility(
-                wxHotEntities.size() < Constant.PAGE_SIZE
-                        ? View.GONE : View.VISIBLE);
-
         wxHotEntityList.addAll(wxHotEntities);
         wxhotRecyclerViewAdapter.notifyDataSetChanged(wxHotEntityList);
     }

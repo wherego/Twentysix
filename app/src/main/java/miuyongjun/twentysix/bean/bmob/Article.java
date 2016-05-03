@@ -14,4 +14,5 @@ public class Article extends BmobObject{
     public String link;
     public String authorLink;
     public String imageUrl;
+    public String authorImageUrl;
 }

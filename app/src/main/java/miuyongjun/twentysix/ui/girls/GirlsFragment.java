@@ -36,9 +36,7 @@ public class GirlsFragment extends RecyclerBaseFragment {
         this.isLinearManager = isLinearManager;
     }
 
-    @Override
-    public void onViewCreatedBase() {
-    }
+
 
     @Override
     public void getData() {
@@ -102,10 +100,6 @@ public class GirlsFragment extends RecyclerBaseFragment {
             girlsRecyclerViewAdapter.removeFootView();
             return;
         }
-        girlsRecyclerViewAdapter.getFootView().setVisibility(
-                girlsEntities.size() < Constant.PAGE_SIZE
-                        ? View.GONE : View.VISIBLE);
-
         girlsEntityList.addAll(girlsEntities);
         girlsRecyclerViewAdapter.notifyDataSetChanged(girlsEntityList);
     }

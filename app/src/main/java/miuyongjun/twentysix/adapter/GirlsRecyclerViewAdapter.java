@@ -7,7 +7,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.bean.gank.GankEntity;
 
 /**
@@ -33,7 +32,7 @@ public class GirlsRecyclerViewAdapter extends RecyclerBaseAdapter<GankEntity> {
         homeViewHolder.tvTitle.setText(newsEntity.desc);
         Picasso.with(mContext)
                 .load(newsEntity.url)
-                .placeholder(R.mipmap.default_bg)
+//                .placeholder(R.mipmap.default_bg)
                 .into(homeViewHolder.iv_shared_transition);
 
     }

@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.pavlospt.CircleView;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -33,6 +35,9 @@ public abstract class RecyclerBaseAdapter<T> extends LoadMoreRecyclerViewAdapter
         this.mListener = listener;
     }
 
+    public boolean needCreateViewBySelf() {
+        return false;
+    }
 
     public RecyclerBaseAdapter(Context context, List<T> newsEntityList) {
         super(context, newsEntityList);
@@ -42,7 +47,11 @@ public abstract class RecyclerBaseAdapter<T> extends LoadMoreRecyclerViewAdapter
 
     @Override
     public RecyclerView.ViewHolder createViewHoldersBase(ViewGroup parent, int viewType) {
-        return new HomeViewHolder(mInflater.inflate(R.layout.home_card_view, parent, false), mListener);
+        if (needCreateViewBySelf()) {
+            return new AndroidViewHolder(mInflater.inflate(R.layout.android_card_view, parent, false), mListener);
+        }else {
+            return new HomeViewHolder(mInflater.inflate(R.layout.home_card_view, parent, false), mListener);
+        }
     }
 
     @Override
@@ -89,4 +98,35 @@ public abstract class RecyclerBaseAdapter<T> extends LoadMoreRecyclerViewAdapter
             if (listener != null) listener.onItemClick(v, getPosition());
         }
     }
+
+    public class AndroidViewHolder extends BaseRecyclerViewHolder implements View.OnClickListener {
+        @Bind(R.id.iv_shared_transition)
+        protected RatioImageView iv_shared_transition;
+        @Bind(R.id.tv_title)
+        protected TextView tvTitle;
+        @Bind(R.id.cardView)
+        protected CardView cardView;
+        @Bind(R.id.iv_logo)
+        protected CircleView logo;
+        @Bind(R.id.tv_author)
+        protected TextView tv_author;
+        OnRecyclerViewItemClickListener listener;
+
+        public AndroidViewHolder(View convertView, OnRecyclerViewItemClickListener listener) {
+            super(convertView);
+            ButterKnife.bind(this, convertView);
+            iv_shared_transition.setOriginalSize(50, 20);
+            this.listener = listener;
+            cardView.setOnClickListener(this);
+            iv_shared_transition.setOnClickListener(this);
+            logo.setOnClickListener(this);
+            tv_author.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (listener != null) listener.onItemClick(v, getPosition());
+        }
+    }
+
 }

@@ -2,8 +2,6 @@ package miuyongjun.twentysix.ui.base;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,7 +23,7 @@ import miuyongjun.twentysix.widget.RatioImageView;
  * 　　　　    　┃┫┫　┃┫┫
  * 　　　　    　┗┻┛　┗┻┛
  */
-public abstract class RecyclerBaseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnRecyclerViewItemClickListener {
+public abstract class RecyclerBaseFragment extends LazyFragment implements SwipeRefreshLayout.OnRefreshListener, OnRecyclerViewItemClickListener {
     protected int pageIndex = 1;
     @Bind(R.id.mRecyclerView)
     protected RecyclerView mRecyclerView;
@@ -33,8 +31,9 @@ public abstract class RecyclerBaseFragment extends Fragment implements SwipeRefr
     protected SwipeRefreshLayout mSwipeLayout;
     protected boolean isNoData = false;
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View initViews(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_news, container, false);
         ButterKnife.bind(this, rootView);
         onViewCreatedBase();
@@ -43,11 +42,9 @@ public abstract class RecyclerBaseFragment extends Fragment implements SwipeRefr
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void initData() {
         getData();
     }
-
     private void initView() {
         mSwipeLayout.setColorSchemeResources(R.color.colorAccent);
         mSwipeLayout.setOnRefreshListener(this);
@@ -65,7 +62,8 @@ public abstract class RecyclerBaseFragment extends Fragment implements SwipeRefr
         }
     };
 
-    public abstract void onViewCreatedBase();
+    public void onViewCreatedBase() {
+    }
 
     public abstract void getData();
 

@@ -3,6 +3,9 @@ package miuyongjun.twentysix.ui.android;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.TextView;
+
+import com.github.pavlospt.CircleView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +17,7 @@ import miuyongjun.twentysix.bean.bmob.Article;
 import miuyongjun.twentysix.common.Constant;
 import miuyongjun.twentysix.ui.activity.WebActivity;
 import miuyongjun.twentysix.ui.base.RecyclerBaseFragment;
+import miuyongjun.twentysix.utils.ToastUtils;
 
 /**
  * Created by miaoyongjun on 2016/4/30.
@@ -25,10 +29,7 @@ public class AndroidFragment extends RecyclerBaseFragment {
 
     List<Article> newsEntityList = new ArrayList<>();
 
-    @Override
-    public void onViewCreatedBase() {
 
-    }
 
     @Override
     public void initAdapter() {
@@ -40,7 +41,17 @@ public class AndroidFragment extends RecyclerBaseFragment {
 
     @Override
     public void cardViewClick(View v, int position) {
-        Intent intent = WebActivity.newIntent(getActivity(), newsEntityList.get(position).link,
+        String url;
+        if (v instanceof CircleView || v instanceof TextView) {
+            url = newsEntityList.get(position).authorLink;
+        } else {
+            url = newsEntityList.get(position).link;
+        }
+        if (url == null) {
+            ToastUtils.showSnakbar("没有该作者的连接哦", mRecyclerView);
+            return;
+        }
+        Intent intent = WebActivity.newIntent(getActivity(), url,
                 newsEntityList.get(position).title);
         startActivity(intent);
     }
@@ -48,7 +59,8 @@ public class AndroidFragment extends RecyclerBaseFragment {
     @Override
     public void getData() {
         BmobQuery<Article> bmobQuery = new BmobQuery<>();
-        bmobQuery.setLimit(5);
+        bmobQuery.setSkip(Constant.PAGE_SIZE * (pageIndex - 1));
+        bmobQuery.setLimit(Constant.PAGE_SIZE * pageIndex);
         bmobQuery.findObjects(getActivity(), new FindListener<Article>() {
             @Override
             public void onSuccess(List<Article> list) {
@@ -88,9 +100,6 @@ public class AndroidFragment extends RecyclerBaseFragment {
             isNoData = true;
             androidRecyclerViewAdapter.removeFootView();
         }
-        androidRecyclerViewAdapter.getFootView().setVisibility(
-                articleEntities.size() < Constant.PAGE_SIZE
-                        ? View.GONE : View.VISIBLE);
         newsEntityList.addAll(articleEntities);
         androidRecyclerViewAdapter.notifyDataSetChanged(newsEntityList);
     }

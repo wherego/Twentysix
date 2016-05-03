@@ -5,11 +5,9 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@mipmap/ic_action_t"
             android:title="@string/app_name"/>
         <item
             android:id="@+id/nav_gank"
-            android:icon="@mipmap/ic_action_g"
             android:title="@string/gank_io"/>
         <item
             android:id="@+id/nav_health"
