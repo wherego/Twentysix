@@ -13,6 +13,7 @@ import java.io.File;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import miuyongjun.twentysix.R;
+import miuyongjun.twentysix.common.Constant;
 import miuyongjun.twentysix.ui.base.ToolbarActivity;
 import miuyongjun.twentysix.utils.ImageUtils;
 import miuyongjun.twentysix.utils.ShareUtils;
@@ -68,7 +69,7 @@ public class PictureActivity extends ToolbarActivity {
         Subscription s = ImageUtils.saveImageAndGetPathObservable(this, mImageUrl, mImageTitle)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(uri -> {
-                    File appDir = new File(Environment.getExternalStorageDirectory(), "TwentySix");
+                    File appDir = new File(Environment.getExternalStorageDirectory(), Constant.APP_FOLDER+ Constant.SAVE_IMAGE_FILES);
                     String msg = String.format(getString(R.string.picture_has_save_to),
                             appDir.getAbsolutePath());
                     ToastUtils.showShort(msg);

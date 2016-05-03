@@ -7,6 +7,14 @@ package miuyongjun.twentysix.common;
  */
 
 public class Constant {
+    public static final String BOMB_APPLICATION_ID = "2a2e62b5ecf08e6fa816127fcbb3c85e";
+
+    public static final String APP_FOLDER = "TwentySix";// 缓存json数据的一级目录
+    public static final String APP_LOG_FILE = "error_logs";
+    public static final String CACHE_JSON_FILES = "caches/files";// 缓存json数据的二级目录
+    public static final String CACHE_IMAGE_FILES = ".caches/.images";
+    public static final String SAVE_IMAGE_FILES = "/download";
+
     public static final String NEWS_API_KEY = "6c7de6fed9754bda775eb65272bb890a";
     public static final int PAGE_SIZE = 10;
     public static final String GANK_SERVER_IP = "http://gank.io/api";

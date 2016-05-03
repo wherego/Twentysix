@@ -6,11 +6,9 @@ import com.google.gson.GsonBuilder;
 import java.util.concurrent.TimeUnit;
 
 import miuyongjun.twentysix.api.GankApi;
-import miuyongjun.twentysix.api.NewsApi;
 import miuyongjun.twentysix.api.WXHotApi;
 import miuyongjun.twentysix.bean.gank.GankBaseEntity;
 import miuyongjun.twentysix.bean.gank.GankDateBaseEntity;
-import miuyongjun.twentysix.bean.news.NewsBaseEntity;
 import miuyongjun.twentysix.bean.wechat.WXHotBaseEntity;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -27,7 +25,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class RetrofitUtil {
-    static NewsApi newsApi;
+//    static NewsApi newsApi;
     static GankApi gankApi;
     static WXHotApi wxHotApi;
 
@@ -53,13 +51,6 @@ public class RetrofitUtil {
     static <T> Observable.Transformer<T, T> applySchedulers() {
         return observable -> observable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public static Observable<NewsBaseEntity> getNewsApi(String json) {
-        if (newsApi == null) {
-            newsApi = RetrofitSetting().create(NewsApi.class);
-        }
-        return newsApi.getNewsData(json).compose(RetrofitUtil.<NewsBaseEntity>applySchedulers());
     }
 
     public static Observable<WXHotBaseEntity> getWXHotApi(int page) {

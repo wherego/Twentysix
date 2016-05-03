@@ -15,7 +15,7 @@
 
     <string name="ask_saving_picture">保存到手机?</string>
     <string name="picture_has_save_to">图片已保存至 %s 文件夹</string>
-    <string name="gank_io">gank.io</string>
+    <string name="gank_io">Gank.io</string>
 
     <!-- Transitions -->
     <string name="transition_avatar">AvatarTransition</string>

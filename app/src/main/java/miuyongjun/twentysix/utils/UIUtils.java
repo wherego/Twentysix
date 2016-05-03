@@ -2,6 +2,7 @@ package miuyongjun.twentysix.utils;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -9,6 +10,7 @@ import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 
+import miuyongjun.twentysix.TwentySixApplication;
 import miuyongjun.twentysix.common.Constant;
 
 /**
@@ -17,6 +19,9 @@ import miuyongjun.twentysix.common.Constant;
  * 　　　　    　┗┻┛　┗┻┛
  */
 public class UIUtils {
+    public static Context getContext() {
+        return TwentySixApplication.getApplication();
+    }
     public static void intentWithTransition(Activity context, Intent intent, View view) {
         intent.putExtra(
                 Constant.EXTRA_TRANSITION, Constant.TRANSITION_EXPLODE);

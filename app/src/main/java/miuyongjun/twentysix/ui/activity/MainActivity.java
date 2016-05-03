@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,15 +16,17 @@ import java.util.Calendar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import miuyongjun.twentysix.R;
+import miuyongjun.twentysix.common.bus.ChooseDate;
 import miuyongjun.twentysix.ui.base.ToolbarActivity;
 import miuyongjun.twentysix.ui.gank.GankFragment;
 import miuyongjun.twentysix.ui.healthadvisory.HealthAdvisoryFragment;
 import miuyongjun.twentysix.ui.home.HomeFragment;
 import miuyongjun.twentysix.utils.BusUtil;
+import miuyongjun.twentysix.utils.DoubleClickExitHelper;
 
 public class MainActivity extends ToolbarActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    DoubleClickExitHelper mDoubleClickExitHelper;
     @Bind(R.id.nav_view)
     NavigationView navigationView;
     @Bind(R.id.drawer_layout)
@@ -48,6 +51,7 @@ public class MainActivity extends ToolbarActivity
         onNavigationItemSelected(item);
         setAppBarElevation(0f);
         setTitle(R.string.app_name);
+        mDoubleClickExitHelper = new DoubleClickExitHelper(this);
     }
 
     @Override
@@ -80,35 +84,15 @@ public class MainActivity extends ToolbarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_change) {
+        if (id == R.id.action_date) {
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
             int monthOfYear = calendar.get(Calendar.MONTH);
             int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-//            DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this,R.style.Material_App_Dialog_DatePicker);
-//            datePickerDialog.show();
-            android.app.DatePickerDialog pickerDialog = new android.app.DatePickerDialog(MainActivity.this, (view, year1, monthOfYear1, dayOfMonth1) -> {
-
-            }, year, monthOfYear, dayOfMonth);
+            android.app.DatePickerDialog pickerDialog = new android.app.DatePickerDialog(
+                    MainActivity.this, (view, year1, monthOfYear1, dayOfMonth1) ->
+                    BusUtil.getBusInstance().post(new ChooseDate(year1, monthOfYear1, dayOfMonth1)), year, monthOfYear, dayOfMonth);
             pickerDialog.show();
-//            Dialog.Builder datePickerDialog = new DatePickerDialog.Builder(R.style.Material_App_Dialog_DatePicker) {
-//                @Override
-//                public void onPositiveActionClicked(DialogFragment fragment) {
-//                    DatePickerDialog dialog = (DatePickerDialog)fragment.getDialog();
-//                    String date = dialog.getFormattedDate(SimpleDateFormat.getDateInstance());
-////                    Toast.makeText(mActivity, "Date is " + date, Toast.LENGTH_SHORT).show();
-//                    super.onPositiveActionClicked(fragment);
-//                }
-//
-//                @Override
-//                public void onNegativeActionClicked(DialogFragment fragment) {
-////                    Toast.makeText(mActivity, "Cancelled" , Toast.LENGTH_SHORT).show();
-//                    super.onNegativeActionClicked(fragment);
-//                }
-//            };
-//            datePickerDialog.positiveAction("OK")
-//                    .negativeAction("CANCEL");
-
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -122,10 +106,14 @@ public class MainActivity extends ToolbarActivity
         setAppBarElevation(10f);
         switch (item.getItemId()) {
             case R.id.nav_home:
+                mToolbar.getMenu().clear();
+                mToolbar.inflateMenu(R.menu.main);
                 setAppBarElevation(0f);
                 fragmentClass = HomeFragment.class;
                 break;
             case R.id.nav_gank:
+                mToolbar.getMenu().clear();
+                mToolbar.inflateMenu(R.menu.gank);
                 fragmentClass = GankFragment.class;
                 break;
             default:
@@ -145,5 +133,12 @@ public class MainActivity extends ToolbarActivity
         return true;
     }
 
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        boolean flag = true;
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            return mDoubleClickExitHelper.onKeyDown(keyCode, navigationView);
+        }
+        return flag;
+    }
 }

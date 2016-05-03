@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.common.CommonFragmentPagerAdapter;
 import miuyongjun.twentysix.ui.girls.GirlsFragment;
-import miuyongjun.twentysix.ui.news.NewsFragment;
+import miuyongjun.twentysix.ui.android.AndroidFragment;
 import miuyongjun.twentysix.ui.wxhot.WXHotFragment;
 
 /**
@@ -45,6 +45,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         initData();
         initViewPager();
         initTabLayout();
@@ -53,8 +54,8 @@ public class HomeFragment extends Fragment {
     private void initData() {
         tabTitles = getActivity().getResources().getStringArray(R.array.home_list);
         mFragmentList = new ArrayList<>();
-        NewsFragment newsFragment = new NewsFragment();
-        mFragmentList.add(newsFragment);
+        AndroidFragment androidFragment = new AndroidFragment();
+        mFragmentList.add(androidFragment);
         WXHotFragment wxHotFragment = new WXHotFragment();
         mFragmentList.add(wxHotFragment);
         GirlsFragment girlsFragment = new GirlsFragment(false);

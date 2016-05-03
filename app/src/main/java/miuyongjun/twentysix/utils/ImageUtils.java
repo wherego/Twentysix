@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import miuyongjun.twentysix.common.Constant;
 import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -39,9 +40,13 @@ public class ImageUtils {
                 subscriber.onCompleted();
             }
         }).flatMap(bitmap -> {
-            File appDir = new File(Environment.getExternalStorageDirectory(), "TwentySix");
+            File appDir = new File(Environment.getExternalStorageDirectory(), Constant.APP_FOLDER + Constant.SAVE_IMAGE_FILES);
             if (!appDir.exists()) {
-                appDir.mkdir();
+                try {
+                    appDir.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             String fileName = title.replace('/', '-') + ".jpg";
             File file = new File(appDir, fileName);

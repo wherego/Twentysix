@@ -11,7 +11,9 @@ import android.view.animation.DecelerateInterpolator;
 import miuyongjun.twentysix.R;
 
 /**
- * Created by miuyongjun on 16/4/29.
+ * Created by miaoyongjun on 16/4/29.
+ * 　　　　    　┃┫┫　┃┫┫
+ * 　　　　    　┗┻┛　┗┻┛
  */
 public abstract class ToolbarActivity extends BaseActivity {
 
