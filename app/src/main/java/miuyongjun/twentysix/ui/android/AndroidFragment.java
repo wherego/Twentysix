@@ -1,5 +1,6 @@
 package miuyongjun.twentysix.ui.android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
@@ -10,12 +11,9 @@ import com.github.pavlospt.CircleView;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.listener.FindListener;
 import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.adapter.AndroidRecyclerViewAdapter;
 import miuyongjun.twentysix.bean.bmob.Article;
-import miuyongjun.twentysix.common.Constant;
 import miuyongjun.twentysix.ui.activity.WebActivity;
 import miuyongjun.twentysix.ui.base.RecyclerBaseFragment;
 import miuyongjun.twentysix.utils.ToastUtils;
@@ -25,7 +23,10 @@ import miuyongjun.twentysix.utils.ToastUtils;
  * 　　　　    　┃┫┫　┃┫┫
  * 　　　　    　┗┻┛　┗┻┛
  */
-public class AndroidFragment extends RecyclerBaseFragment {
+public class AndroidFragment extends RecyclerBaseFragment implements AndroidContract.View {
+
+    private AndroidContract.Presenter mPresenter;
+
     AndroidRecyclerViewAdapter androidRecyclerViewAdapter;
 
     List<Article> newsEntityList = new ArrayList<>();
@@ -57,23 +58,13 @@ public class AndroidFragment extends RecyclerBaseFragment {
     }
 
     @Override
-    public void getData() {
-        BmobQuery<Article> bmobQuery = new BmobQuery<>();
-        bmobQuery.setSkip(Constant.PAGE_SIZE * (pageIndex - 1));
-        bmobQuery.setLimit(Constant.PAGE_SIZE * pageIndex);
-        bmobQuery.order("-createdAt");
-        bmobQuery.findObjects(getActivity(), new FindListener<Article>() {
-            @Override
-            public void onSuccess(List<Article> list) {
-                mSwipeLayout.setRefreshing(false);
-                handleListData(list);
-            }
+    public Context getContext() {
+        return getActivity();
+    }
 
-            @Override
-            public void onError(int i, String s) {
-                mSwipeLayout.setRefreshing(false);
-            }
-        });
+    @Override
+    public void getData() {
+        mPresenter.loadData(pageIndex);
     }
 
     @Override
@@ -92,18 +83,32 @@ public class AndroidFragment extends RecyclerBaseFragment {
     }
 
 
-    private void handleListData(List<Article> articleEntities) {
-        if (articleEntities == null) {
-            isNoData = true;
-            androidRecyclerViewAdapter.removeFootView();
-            return;
-        } else if (articleEntities.size() < Constant.PAGE_SIZE) {
-            isNoData = true;
-            androidRecyclerViewAdapter.removeFootView();
-            ToastUtils.showSnakbar(R.string.no_data,mRecyclerView);
-        }
+    @Override
+    public void showNoData() {
+        isNoData = true;
+        androidRecyclerViewAdapter.removeFootView();
+        ToastUtils.showSnakbar(R.string.no_data, mRecyclerView);
+    }
+
+    @Override
+    public void showData(List<Article> articleEntities) {
         newsEntityList.addAll(articleEntities);
         androidRecyclerViewAdapter.notifyDataSetChanged(newsEntityList);
     }
 
+    @Override
+    public void showCompletedData() {
+        mSwipeLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void showLoadErrorData() {
+        isNoData = true;
+        androidRecyclerViewAdapter.removeFootView();
+    }
+
+    @Override
+    public void setPresenter(AndroidContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
 }

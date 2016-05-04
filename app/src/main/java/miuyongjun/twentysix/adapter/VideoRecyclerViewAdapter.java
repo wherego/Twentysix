@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import java.util.List;
 
@@ -52,6 +53,8 @@ public class VideoRecyclerViewAdapter extends RecyclerBaseAdapter<Video> {
         protected CardView cardView;
         @Bind(R.id.play_btn)
         ImageView play_btn;
+        @Bind(R.id.video_player)
+        VideoView video_player;
         OnRecyclerViewItemClickListener listener;
 
         public VideoViewHolder(View convertView, OnRecyclerViewItemClickListener listener) {

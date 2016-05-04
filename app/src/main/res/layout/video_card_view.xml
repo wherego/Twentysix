@@ -20,6 +20,7 @@
             android:layout_margin="10dp"
             android:textColor="@color/black"
             android:textSize="18sp"/>
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,6 +33,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@mipmap/biz_video_list_play_icon_big"/>
+
+            <VideoView
+                android:id="@+id/video_player"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:visibility="gone"/>
 
         </FrameLayout>
 

@@ -2,7 +2,10 @@ package miuyongjun.twentysix.ui.video;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +29,6 @@ public class VideoFragment extends RecyclerBaseFragment {
     List<Video> videoEntityList = new ArrayList<>();
 
 
-
-
     @Override
     public void initAdapter() {
         spRecyclerViewAdapter = new VideoRecyclerViewAdapter(getActivity(), videoEntityList);
@@ -39,7 +40,14 @@ public class VideoFragment extends RecyclerBaseFragment {
     @Override
     public void cardViewClick(View v, int position) {
         if (v instanceof ImageView) {
-
+            v.setVisibility(View.GONE);
+            VideoView videoView = (VideoView) ((FrameLayout) v.getParent()).getChildAt(1);
+            videoView.setVisibility(View.VISIBLE);
+            videoView.setVideoPath("http://bmob-cdn-982.b0.upaiyun.com/2016/05/04/8b5a2bc8409ce87180f3c687e73b7811.mp4");
+            MediaController mediaController = new MediaController(getActivity());
+            videoView.setMediaController(mediaController);
+            mediaController.setMediaPlayer(videoView);
+            videoView.requestFocus();
         }
     }
 
