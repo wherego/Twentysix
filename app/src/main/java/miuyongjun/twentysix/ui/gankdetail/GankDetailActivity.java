@@ -83,7 +83,7 @@ public class GankDetailActivity extends AppCompatActivity {
                 .filter(gankDateBaseEntity -> gankDateBaseEntity.results != null)
                 .map(gankDateBaseEntity -> gankDateBaseEntity.results)
                 .subscribe(this::addFragment,
-                        throwable -> ToastUtils.showSnakbar(getResources().getString(R.string.retry), tabLayout),
+                        throwable -> ToastUtils.showSnakbar(R.string.retry, tabLayout),
                         this::initViewPager);
     }
 

@@ -1,19 +1,17 @@
 package miuyongjun.twentysix.common.retrofit;
 
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.concurrent.TimeUnit;
-
 import miuyongjun.twentysix.api.GankApi;
-import miuyongjun.twentysix.api.WXHotApi;
 import miuyongjun.twentysix.bean.gank.GankBaseEntity;
 import miuyongjun.twentysix.bean.gank.GankDateBaseEntity;
-import miuyongjun.twentysix.bean.wechat.WXHotBaseEntity;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -26,17 +24,17 @@ import rx.schedulers.Schedulers;
 
 public class RetrofitUtil {
     static GankApi gankApi;
-    static WXHotApi wxHotApi;
 
     public static Retrofit RetrofitSetting() {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .serializeNulls()
                 .create();
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(5, TimeUnit.SECONDS);
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
         return new Retrofit.Builder()
-                .client(builder.build())
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl("http://gank.io/api/data/")
@@ -50,13 +48,6 @@ public class RetrofitUtil {
     static <T> Observable.Transformer<T, T> applySchedulers() {
         return observable -> observable.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public static Observable<WXHotBaseEntity> getWXHotApi(int page) {
-        if (wxHotApi == null) {
-            wxHotApi = RetrofitSetting().create(WXHotApi.class);
-        }
-        return wxHotApi.getWXHotData("10", "1", page + "").compose(RetrofitUtil.<WXHotBaseEntity>applySchedulers());
     }
 
     public static Observable<GankBaseEntity> getGirlsApi(String type, int pageIndex) {

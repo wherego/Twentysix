@@ -42,11 +42,7 @@ public class ImageUtils {
         }).flatMap(bitmap -> {
             File appDir = new File(Environment.getExternalStorageDirectory(), Constant.APP_FOLDER + Constant.SAVE_IMAGE_FILES);
             if (!appDir.exists()) {
-                try {
-                    appDir.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                appDir.mkdirs();
             }
             String fileName = title.replace('/', '-') + ".jpg";
             File file = new File(appDir, fileName);

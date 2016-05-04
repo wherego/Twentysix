@@ -34,8 +34,8 @@ public class ToastUtils {
         }
     }
 
-    public static void showSnakbar(String showTitle, View view) {
-        Snackbar.make(view, showTitle, Snackbar.LENGTH_LONG).show();
+    public static void showSnakbar(int showTitle, View view) {
+        Snackbar.make(view, showTitle, Snackbar.LENGTH_SHORT).show();
     }
 
     public static void showSnakbarErrorWithCallBack(Throwable throwable, View view, ReTryCallBack reTryCallBack) {

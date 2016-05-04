@@ -11,13 +11,17 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Calendar;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import miuyongjun.twentysix.R;
+import miuyongjun.twentysix.common.bus.ChooseDate;
 import miuyongjun.twentysix.ui.base.ToolbarActivity;
 import miuyongjun.twentysix.ui.gank.GankFragment;
 import miuyongjun.twentysix.ui.healthadvisory.HealthAdvisoryFragment;
 import miuyongjun.twentysix.ui.home.HomeFragment;
+import miuyongjun.twentysix.ui.video.VideoFragment;
 import miuyongjun.twentysix.utils.BusUtil;
 import miuyongjun.twentysix.utils.DoubleClickExitHelper;
 
@@ -28,6 +32,7 @@ public class MainActivity extends ToolbarActivity
     NavigationView navigationView;
     @Bind(R.id.drawer_layout)
     DrawerLayout drawer;
+    int currentPosition = 0;
 
     @Override
     protected int provideContentViewId() {
@@ -36,6 +41,9 @@ public class MainActivity extends ToolbarActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            currentPosition = savedInstanceState.getInt("position");
+        }
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -44,11 +52,17 @@ public class MainActivity extends ToolbarActivity
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-        MenuItem item = navigationView.getMenu().getItem(0);
+        MenuItem item = navigationView.getMenu().getItem(currentPosition);
         onNavigationItemSelected(item);
         setAppBarElevation(0f);
         setTitle(R.string.app_name);
         mDoubleClickExitHelper = new DoubleClickExitHelper(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("position", currentPosition);
     }
 
     @Override
@@ -81,6 +95,17 @@ public class MainActivity extends ToolbarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id == R.id.action_date) {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int monthOfYear = calendar.get(Calendar.MONTH);
+            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            android.app.DatePickerDialog pickerDialog = new android.app.DatePickerDialog(
+                    MainActivity.this, (view, year1, monthOfYear1, dayOfMonth1) ->
+                    BusUtil.getBusInstance().post(new ChooseDate(year1, monthOfYear1, dayOfMonth1)), year, monthOfYear, dayOfMonth);
+            pickerDialog.show();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -92,11 +117,18 @@ public class MainActivity extends ToolbarActivity
         setAppBarElevation(10f);
         switch (item.getItemId()) {
             case R.id.nav_home:
+                currentPosition = 0;
                 setAppBarElevation(0f);
                 fragmentClass = HomeFragment.class;
                 break;
             case R.id.nav_gank:
+                currentPosition = 1;
+                setAppBarElevation(0f);
                 fragmentClass = GankFragment.class;
+                break;
+            case R.id.nav_video:
+                currentPosition = 2;
+                fragmentClass = VideoFragment.class;
                 break;
             default:
                 setAppBarElevation(0f);

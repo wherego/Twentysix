@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">TwentySix</string>
+    <string name="gank_io">Gank.io</string>
+    <string name="video">Video</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -15,8 +17,8 @@
 
     <string name="ask_saving_picture">保存到手机?</string>
     <string name="picture_has_save_to">图片已保存至 %s 文件夹</string>
-    <string name="gank_io">Gank.io</string>
-
+    <string name="no_author_link">没有该作者的连接哦</string>
+    <string name="no_data">数据已经加载完毕</string>
     <!-- Transitions -->
     <string name="transition_avatar">AvatarTransition</string>
     <string name="transition_morph_view" translatable="false">morph_view_transition</string>

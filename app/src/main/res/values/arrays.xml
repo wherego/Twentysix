@@ -1,7 +1,7 @@
 <resources>
     <array name="home_list">
         <item>Android</item>
-        <item>WeChat</item>
+        <item>专题</item>
         <item>Girls</item>
     </array>
     <array name="gank_detail_list">

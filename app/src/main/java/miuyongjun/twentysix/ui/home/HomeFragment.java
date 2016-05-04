@@ -18,7 +18,7 @@ import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.common.CommonFragmentPagerAdapter;
 import miuyongjun.twentysix.ui.girls.GirlsFragment;
 import miuyongjun.twentysix.ui.android.AndroidFragment;
-import miuyongjun.twentysix.ui.wxhot.WXHotFragment;
+import miuyongjun.twentysix.ui.specialtopic.SpecialTopicFragment;
 
 /**
  * Created by miaoyongjun on 2016/4/30.
@@ -56,8 +56,8 @@ public class HomeFragment extends Fragment {
         mFragmentList = new ArrayList<>();
         AndroidFragment androidFragment = new AndroidFragment();
         mFragmentList.add(androidFragment);
-        WXHotFragment wxHotFragment = new WXHotFragment();
-        mFragmentList.add(wxHotFragment);
+        SpecialTopicFragment specialTopicFragment = new SpecialTopicFragment();
+        mFragmentList.add(specialTopicFragment);
         GirlsFragment girlsFragment = new GirlsFragment(false);
         mFragmentList.add(girlsFragment);
         mAdapter = new CommonFragmentPagerAdapter(getChildFragmentManager(), tabTitles, mFragmentList);

@@ -12,6 +12,7 @@ import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.listener.FindListener;
+import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.adapter.AndroidRecyclerViewAdapter;
 import miuyongjun.twentysix.bean.bmob.Article;
 import miuyongjun.twentysix.common.Constant;
@@ -28,7 +29,6 @@ public class AndroidFragment extends RecyclerBaseFragment {
     AndroidRecyclerViewAdapter androidRecyclerViewAdapter;
 
     List<Article> newsEntityList = new ArrayList<>();
-
 
 
     @Override
@@ -48,7 +48,7 @@ public class AndroidFragment extends RecyclerBaseFragment {
             url = newsEntityList.get(position).link;
         }
         if (url == null) {
-            ToastUtils.showSnakbar("没有该作者的连接哦", mRecyclerView);
+            ToastUtils.showSnakbar(R.string.no_author_link, mRecyclerView);
             return;
         }
         Intent intent = WebActivity.newIntent(getActivity(), url,
@@ -61,6 +61,7 @@ public class AndroidFragment extends RecyclerBaseFragment {
         BmobQuery<Article> bmobQuery = new BmobQuery<>();
         bmobQuery.setSkip(Constant.PAGE_SIZE * (pageIndex - 1));
         bmobQuery.setLimit(Constant.PAGE_SIZE * pageIndex);
+        bmobQuery.order("-createdAt");
         bmobQuery.findObjects(getActivity(), new FindListener<Article>() {
             @Override
             public void onSuccess(List<Article> list) {
@@ -99,6 +100,7 @@ public class AndroidFragment extends RecyclerBaseFragment {
         } else if (articleEntities.size() < Constant.PAGE_SIZE) {
             isNoData = true;
             androidRecyclerViewAdapter.removeFootView();
+            ToastUtils.showSnakbar(R.string.no_data,mRecyclerView);
         }
         newsEntityList.addAll(articleEntities);
         androidRecyclerViewAdapter.notifyDataSetChanged(newsEntityList);

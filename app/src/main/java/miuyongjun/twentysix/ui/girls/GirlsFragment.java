@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.adapter.GirlsRecyclerViewAdapter;
 import miuyongjun.twentysix.bean.gank.GankBaseEntity;
 import miuyongjun.twentysix.bean.gank.GankEntity;
@@ -18,6 +19,7 @@ import miuyongjun.twentysix.common.Constant;
 import miuyongjun.twentysix.common.retrofit.RetrofitUtil;
 import miuyongjun.twentysix.ui.base.RecyclerBaseFragment;
 import miuyongjun.twentysix.ui.gankdetail.GankDetailActivity;
+import miuyongjun.twentysix.utils.ToastUtils;
 import miuyongjun.twentysix.utils.UIUtils;
 import miuyongjun.twentysix.widget.RecyclerSpanSizeLookup;
 
@@ -32,10 +34,13 @@ public class GirlsFragment extends RecyclerBaseFragment {
     GirlsRecyclerViewAdapter girlsRecyclerViewAdapter;
     List<GankEntity> girlsEntityList = new ArrayList<>();
 
+    public GirlsFragment() {
+
+    }
+
     public GirlsFragment(boolean isLinearManager) {
         this.isLinearManager = isLinearManager;
     }
-
 
 
     @Override
@@ -43,7 +48,11 @@ public class GirlsFragment extends RecyclerBaseFragment {
         RetrofitUtil.getGirlsApi(Constant.GANK_FULI, pageIndex)
                 .filter(this::handleFilter)
                 .map(gankBaseEntity -> gankBaseEntity.gankEntityList)
-                .subscribe(this::handleListData, this::onError, () -> mSwipeLayout.setRefreshing(false));
+                .subscribe(this::handleListData, this::onError, () -> {
+                    if (mSwipeLayout != null) {
+                        mSwipeLayout.setRefreshing(false);
+                    }
+                });
     }
 
     @Override
@@ -95,10 +104,14 @@ public class GirlsFragment extends RecyclerBaseFragment {
     }
 
     private void handleListData(List<GankEntity> girlsEntities) {
-        if (girlsEntities == null || girlsEntities.size() < Constant.PAGE_SIZE) {
+        if (girlsEntities == null) {
             isNoData = true;
             girlsRecyclerViewAdapter.removeFootView();
             return;
+        } else if (girlsEntities.size() < Constant.PAGE_SIZE) {
+            isNoData = true;
+            girlsRecyclerViewAdapter.removeFootView();
+            ToastUtils.showSnakbar(R.string.no_data, mRecyclerView);
         }
         girlsEntityList.addAll(girlsEntities);
         girlsRecyclerViewAdapter.notifyDataSetChanged(girlsEntityList);

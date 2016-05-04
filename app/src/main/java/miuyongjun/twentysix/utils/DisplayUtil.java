@@ -1,6 +1,7 @@
 package miuyongjun.twentysix.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -95,20 +96,32 @@ public class DisplayUtil {
             displayType = DISPLAY_XLARGE;
         }
     }
+    public static final float getHeightInPx(Context context) {
+        final float height = context.getResources().getDisplayMetrics().heightPixels;
+        return height;
+    }
+
+    public static final float getWidthInPx(Context context) {
+        final float width = context.getResources().getDisplayMetrics().widthPixels;
+        return width;
+    }
+
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    public static int px2dip(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+
 
     /**
      * 是否是横屏
      */
     public static boolean isHorizontal() {
         return screenWidth > screenHeight;
-    }
-
-    public static int px2dip(float inParam) {
-        return (int) (inParam / density + 0.5F);
-    }
-
-    public static int dip2px(float inParam) {
-        return (int) (inParam * density + 0.5F);
     }
 
     public static int px2sp(float inParam) {

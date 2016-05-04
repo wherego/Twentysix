@@ -8,7 +8,9 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * Created by miuyongjun on 16/4/29.
+ * Created by miaoyongjun on 16/4/29.
+ * 　　　　    　┃┫┫　┃┫┫
+ * 　　　　    　┗┻┛　┗┻┛
  */
 public class BaseActivity extends AppCompatActivity {
 
