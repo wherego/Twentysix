@@ -29,15 +29,17 @@
 
             <ImageView
                 android:id="@+id/play_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_gravity="center"
-                android:src="@mipmap/biz_video_list_play_icon_big"/>
+                android:src="@mipmap/ic_action_av_play_circle_outline"/>
 
-            <VideoView
+            <miuyongjun.twentysix.widget.video.MVideoPlayer
                 android:id="@+id/video_player"
+                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
+                android:transitionName="@string/transition_name"
                 android:visibility="gone"/>
 
         </FrameLayout>

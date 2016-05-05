@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import java.util.List;
 
@@ -16,6 +15,7 @@ import butterknife.ButterKnife;
 import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.bean.bmob.Video;
 import miuyongjun.twentysix.common.interfaces.OnRecyclerViewItemClickListener;
+import miuyongjun.twentysix.widget.video.MVideoPlayer;
 
 /**
  * Created by miaoyongjun on 16/5/3.
@@ -54,7 +54,7 @@ public class VideoRecyclerViewAdapter extends RecyclerBaseAdapter<Video> {
         @Bind(R.id.play_btn)
         ImageView play_btn;
         @Bind(R.id.video_player)
-        VideoView video_player;
+        MVideoPlayer video_player;
         OnRecyclerViewItemClickListener listener;
 
         public VideoViewHolder(View convertView, OnRecyclerViewItemClickListener listener) {

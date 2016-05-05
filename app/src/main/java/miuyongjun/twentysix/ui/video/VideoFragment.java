@@ -1,11 +1,11 @@
 package miuyongjun.twentysix.ui.video;
 
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.MediaController;
-import android.widget.VideoView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,9 @@ import miuyongjun.twentysix.bean.bmob.Video;
 import miuyongjun.twentysix.common.Constant;
 import miuyongjun.twentysix.ui.base.RecyclerBaseFragment;
 import miuyongjun.twentysix.utils.ToastUtils;
+import miuyongjun.twentysix.utils.UIUtils;
+import miuyongjun.twentysix.widget.video.MVideoPlayer;
+import miuyongjun.twentysix.widget.video.MediaController;
 
 /**
  * Created by miaoyongjun on 16/4/30.
@@ -25,9 +28,51 @@ import miuyongjun.twentysix.utils.ToastUtils;
  * 　　　　    　┗┻┛　┗┻┛
  */
 public class VideoFragment extends RecyclerBaseFragment {
+    MVideoPlayer mVideoPlayer;
+    View imageView;
+    int currentPostion = 0;
     VideoRecyclerViewAdapter spRecyclerViewAdapter;
     List<Video> videoEntityList = new ArrayList<>();
 
+    private MVideoPlayer.VideoPlayCallbackImpl mVideoPlayCallback = new MVideoPlayer.VideoPlayCallbackImpl() {
+        @Override
+        public void onCloseVideo() {
+            CloseVideo();
+        }
+
+        @Override
+        public void onSwitchPageType() {
+//            if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+//                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//                mVideoPlayer.setPageType(MediaController.PageType.SCALE);
+//            } else {
+//                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//                mVideoPlayer.setPageType(MediaController.PageType.MAXIMIZE);
+//            }
+            Intent intent = VideoFullScreenActivity.newIntent(getActivity(), videoEntityList.get(currentPostion), mVideoPlayer.getCurrentPosition());
+            UIUtils.intentWithTransition(getActivity(), intent, mVideoPlayer);
+        }
+
+        @Override
+        public void onPlayFinish() {
+            CloseVideo();
+        }
+    };
+
+    private void CloseVideo() {
+        mVideoPlayer.close();
+        imageView.setVisibility(View.VISIBLE);
+        mVideoPlayer.setVisibility(View.GONE);
+        resetPageToPortrait();
+    }
+
+
+    private void resetPageToPortrait() {
+        if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            mVideoPlayer.setPageType(MediaController.PageType.SCALE);
+        }
+    }
 
     @Override
     public void initAdapter() {
@@ -40,14 +85,17 @@ public class VideoFragment extends RecyclerBaseFragment {
     @Override
     public void cardViewClick(View v, int position) {
         if (v instanceof ImageView) {
+            currentPostion = position;
+            if (mVideoPlayer != null) {
+                CloseVideo();
+            }
+            imageView = v;
             v.setVisibility(View.GONE);
-            VideoView videoView = (VideoView) ((FrameLayout) v.getParent()).getChildAt(1);
-            videoView.setVisibility(View.VISIBLE);
-            videoView.setVideoPath("http://bmob-cdn-982.b0.upaiyun.com/2016/05/04/8b5a2bc8409ce87180f3c687e73b7811.mp4");
-            MediaController mediaController = new MediaController(getActivity());
-            videoView.setMediaController(mediaController);
-            mediaController.setMediaPlayer(videoView);
-            videoView.requestFocus();
+            mVideoPlayer = (MVideoPlayer) ((FrameLayout) v.getParent()).getChildAt(1);
+            mVideoPlayer.setVideoPlayCallback(mVideoPlayCallback);
+            mVideoPlayer.setVisibility(View.VISIBLE);
+            mVideoPlayer.setAutoHideController(false);
+            mVideoPlayer.loadVideo(videoEntityList.get(position), 0);
         }
     }
 

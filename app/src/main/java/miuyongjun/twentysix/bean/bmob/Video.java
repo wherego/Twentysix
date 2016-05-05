@@ -1,5 +1,7 @@
 package miuyongjun.twentysix.bean.bmob;
 
+import java.io.Serializable;
+
 import cn.bmob.v3.BmobObject;
 
 /**
@@ -8,7 +10,7 @@ import cn.bmob.v3.BmobObject;
  * 　　　　    　┗┻┛　┗┻┛
  */
 
-public class Video extends BmobObject {
+public class Video extends BmobObject implements Serializable {
     public String title;
     public String describe;
     public String imageUrl;

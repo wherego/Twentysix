@@ -46,8 +46,11 @@
             android:name=".ui.activity.WebActivity"
             android:launchMode="singleTask"/>
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.activity.LoginActivity"
             android:label="@string/title_activity_login">
+        </activity>
+        <activity
+            android:name=".ui.video.VideoFullScreenActivity">
         </activity>
     </application>
 
