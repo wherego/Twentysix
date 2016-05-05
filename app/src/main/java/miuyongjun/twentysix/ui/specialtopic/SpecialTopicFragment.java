@@ -9,13 +9,11 @@ import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.listener.FindListener;
-import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.adapter.SpecialTopicRecyclerViewAdapter;
 import miuyongjun.twentysix.bean.bmob.SpecialTopic;
 import miuyongjun.twentysix.common.Constant;
-import miuyongjun.twentysix.ui.activity.WebActivity;
+import miuyongjun.twentysix.ui.activity.TopicActivity;
 import miuyongjun.twentysix.ui.base.RecyclerBaseFragment;
-import miuyongjun.twentysix.utils.ToastUtils;
 
 /**
  * Created by miaoyongjun on 16/4/30.
@@ -37,8 +35,9 @@ public class SpecialTopicFragment extends RecyclerBaseFragment {
 
     @Override
     public void cardViewClick(View v,int position) {
-        Intent intent = WebActivity.newIntent(getActivity(), spEntityList.get(position).imageUrl,
-                spEntityList.get(position).title);
+        Intent intent = new Intent(getActivity(), TopicActivity.class);
+        intent.putExtra(TopicActivity.TOPIC_TITLE,spEntityList.get(position).title);
+        intent.putExtra(TopicActivity.TOPIC_ID,spEntityList.get(position).getObjectId());
         startActivity(intent);
     }
 
@@ -86,7 +85,6 @@ public class SpecialTopicFragment extends RecyclerBaseFragment {
         } else if (spHotEntities.size() < Constant.PAGE_SIZE) {
             isNoData = true;
             spRecyclerViewAdapter.removeFootView();
-            ToastUtils.showSnakbar(R.string.no_data,mRecyclerView);
         }
         spEntityList.addAll(spHotEntities);
         spRecyclerViewAdapter.notifyDataSetChanged(spEntityList);

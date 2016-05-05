@@ -22,6 +22,6 @@ public interface AndroidContract {
         void showLoadErrorData();
     }
     interface Presenter extends BasePresenter {
-        void loadData(int pageIndex);
+        void loadData(String topicId,int pageIndex);
     }
 }

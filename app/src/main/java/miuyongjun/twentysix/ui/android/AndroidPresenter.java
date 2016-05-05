@@ -20,8 +20,8 @@ public class AndroidPresenter implements AndroidContract.Presenter {
     }
 
     @Override
-    public void loadData(int pageIndex) {
-        AndroidRepository.getInstance().getArticleData(mAndroidView.getContext(), pageIndex, new LoadAndroidDataCallback() {
+    public void loadData(String topicId,int pageIndex) {
+        AndroidRepository.getInstance().getArticleData(mAndroidView.getContext(),topicId, pageIndex, new LoadAndroidDataCallback() {
             @Override
             public void onAndroidDataLoaded(List<Article> articleList) {
                 if (articleList == null) {

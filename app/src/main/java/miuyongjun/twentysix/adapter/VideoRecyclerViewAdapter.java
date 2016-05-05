@@ -1,12 +1,13 @@
 package miuyongjun.twentysix.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import butterknife.ButterKnife;
 import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.bean.bmob.Video;
 import miuyongjun.twentysix.common.interfaces.OnRecyclerViewItemClickListener;
-import miuyongjun.twentysix.widget.video.MVideoPlayer;
+import miuyongjun.twentysix.widget.RatioImageView;
 
 /**
  * Created by miaoyongjun on 16/5/3.
@@ -43,24 +44,26 @@ public class VideoRecyclerViewAdapter extends RecyclerBaseAdapter<Video> {
         Video videoEntity = videoEntityList.get(position);
         VideoViewHolder homeViewHolder = (VideoViewHolder) holder;
         homeViewHolder.video_title.setText(videoEntity.title);
-
+        Picasso.with(mContext)
+                .load(videoEntity.imageUrl)
+                .placeholder(R.mipmap.default_bg)
+                .into(homeViewHolder.video_image);
     }
 
     public class VideoViewHolder extends BaseRecyclerViewHolder implements View.OnClickListener {
         @Bind(R.id.video_title)
         protected TextView video_title;
-        @Bind(R.id.cardView)
-        protected CardView cardView;
         @Bind(R.id.play_btn)
         ImageView play_btn;
-        @Bind(R.id.video_player)
-        MVideoPlayer video_player;
+        @Bind(R.id.video_image)
+        RatioImageView video_image;
         OnRecyclerViewItemClickListener listener;
 
         public VideoViewHolder(View convertView, OnRecyclerViewItemClickListener listener) {
             super(convertView);
             ButterKnife.bind(this, convertView);
             this.listener = listener;
+            video_image.setOriginalSize(50, 30);
             play_btn.setOnClickListener(this);
         }
 

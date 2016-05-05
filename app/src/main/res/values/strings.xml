@@ -27,8 +27,5 @@
     <string name="transition_shared_toolbar" translatable="false">shared_toolbar_transition</string>
     <string name="title_activity_login">Sign in</string>
 
-    <!-- Video -->
-    <string name="video_load_complete">视频播放完成</string>
-
 
 </resources>

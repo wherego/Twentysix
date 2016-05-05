@@ -1,7 +1,6 @@
 package miuyongjun.twentysix.ui.video;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -18,9 +17,7 @@ import miuyongjun.twentysix.bean.bmob.Video;
 import miuyongjun.twentysix.common.Constant;
 import miuyongjun.twentysix.ui.base.RecyclerBaseFragment;
 import miuyongjun.twentysix.utils.ToastUtils;
-import miuyongjun.twentysix.utils.UIUtils;
 import miuyongjun.twentysix.widget.video.MVideoPlayer;
-import miuyongjun.twentysix.widget.video.MediaController;
 
 /**
  * Created by miaoyongjun on 16/4/30.
@@ -30,7 +27,7 @@ import miuyongjun.twentysix.widget.video.MediaController;
 public class VideoFragment extends RecyclerBaseFragment {
     MVideoPlayer mVideoPlayer;
     View imageView;
-    int currentPostion = 0;
+    int currentPosition = 0;
     VideoRecyclerViewAdapter spRecyclerViewAdapter;
     List<Video> videoEntityList = new ArrayList<>();
 
@@ -42,15 +39,10 @@ public class VideoFragment extends RecyclerBaseFragment {
 
         @Override
         public void onSwitchPageType() {
-//            if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-//                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//                mVideoPlayer.setPageType(MediaController.PageType.SCALE);
-//            } else {
-//                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//                mVideoPlayer.setPageType(MediaController.PageType.MAXIMIZE);
-//            }
-            Intent intent = VideoFullScreenActivity.newIntent(getActivity(), videoEntityList.get(currentPostion), mVideoPlayer.getCurrentPosition());
-            UIUtils.intentWithTransition(getActivity(), intent, mVideoPlayer);
+            CloseVideo();
+            Intent intent = VideoFullScreenActivity.newIntent(
+                    getActivity(), videoEntityList.get(currentPosition), mVideoPlayer.getCurrentPosition());
+            startActivity(intent);
         }
 
         @Override
@@ -63,15 +55,12 @@ public class VideoFragment extends RecyclerBaseFragment {
         mVideoPlayer.close();
         imageView.setVisibility(View.VISIBLE);
         mVideoPlayer.setVisibility(View.GONE);
-        resetPageToPortrait();
     }
 
-
-    private void resetPageToPortrait() {
-        if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            mVideoPlayer.setPageType(MediaController.PageType.SCALE);
-        }
+    @Override
+    public void onDestroyView() {
+        if (mVideoPlayer != null) CloseVideo();
+        super.onDestroyView();
     }
 
     @Override
@@ -85,16 +74,14 @@ public class VideoFragment extends RecyclerBaseFragment {
     @Override
     public void cardViewClick(View v, int position) {
         if (v instanceof ImageView) {
-            currentPostion = position;
-            if (mVideoPlayer != null) {
-                CloseVideo();
-            }
+            currentPosition = position;
+            if (mVideoPlayer != null) CloseVideo();
+            mVideoPlayer = (MVideoPlayer) ((FrameLayout) v.getParent()).getChildAt(2);
             imageView = v;
             v.setVisibility(View.GONE);
-            mVideoPlayer = (MVideoPlayer) ((FrameLayout) v.getParent()).getChildAt(1);
             mVideoPlayer.setVideoPlayCallback(mVideoPlayCallback);
             mVideoPlayer.setVisibility(View.VISIBLE);
-            mVideoPlayer.setAutoHideController(false);
+            mVideoPlayer.setAutoHideController(true);
             mVideoPlayer.loadVideo(videoEntityList.get(position), 0);
         }
     }

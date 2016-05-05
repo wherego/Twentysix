@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.util.Timer;
@@ -29,10 +28,6 @@ public class MVideoPlayer extends RelativeLayout {
 
     private final int MSG_HIDE_CONTROLLER = 10;
     private final int MSG_UPDATE_PLAY_TIME = 11;
-    /**
-     * Landscape or portrait
-     */
-    private MediaController.PageType mCurrPageType = MediaController.PageType.SCALE;
 
     private Context mContext;
     private VideoView videoView;
@@ -44,10 +39,16 @@ public class MVideoPlayer extends RelativeLayout {
     private View mCloseBtnView;
     private Video mNowPlayVideo;
 
+
+
+    private MediaController.PageType mCurrPageType = MediaController.PageType.SCALE;
+
     /**
      * automatically hide the control bar
      */
     private boolean mAutoHideController = true;
+
+    private int currentTime;
 
 
     public MVideoPlayer(Context context) {
@@ -137,21 +138,25 @@ public class MVideoPlayer extends RelativeLayout {
         }
 
         @Override
-        public void onProgressTurn(MediaController.ProgressState state, int progress) {
+        public void onProgressTurn(MediaController.ProgressState state, int progress,boolean isFromUser) {
             if (state.equals(MediaController.ProgressState.START)) {
                 mHandler.removeMessages(MSG_HIDE_CONTROLLER);
             } else if (state.equals(MediaController.ProgressState.STOP)) {
                 resetHideTimer();
             } else {
                 int time = progress * videoView.getDuration() / 100;
-                videoView.seekTo(time);
-                updatePlayTime();
+                if (!isFromUser) {
+                    currentTime = time;
+                }else{
+                    videoView.seekTo(time);
+                    updatePlayTime();
+                }
             }
         }
     };
 
     public int getCurrentPosition() {
-        return videoView.getCurrentPosition();
+        return currentTime;
     }
 
 
@@ -181,7 +186,6 @@ public class MVideoPlayer extends RelativeLayout {
             stopHideTimer(true);
             mMediaController.playFinish(videoView.getDuration());
             mVideoPlayCallback.onPlayFinish();
-            Toast.makeText(mContext, R.string.video_load_complete, Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -189,6 +193,9 @@ public class MVideoPlayer extends RelativeLayout {
         mVideoPlayCallback = videoPlayCallback;
     }
 
+    public View getCloseBtnView() {
+        return mCloseBtnView;
+    }
 
     @SuppressWarnings("unused")
     public VideoView getVideoView() {
@@ -199,7 +206,6 @@ public class MVideoPlayer extends RelativeLayout {
         mMediaController.setPageType(pageType);
         mCurrPageType = pageType;
     }
-
 
     public void loadVideo(Video video, int seekTime) {
         if (mNowPlayVideo != null) {

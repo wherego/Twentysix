@@ -25,12 +25,20 @@ import miuyongjun.twentysix.utils.ToastUtils;
  */
 public class AndroidFragment extends RecyclerBaseFragment implements AndroidContract.View {
 
+    public final static String TOPIC_ID = "topic_id";
+    String topicId;
     private AndroidContract.Presenter mPresenter;
 
     AndroidRecyclerViewAdapter androidRecyclerViewAdapter;
 
     List<Article> newsEntityList = new ArrayList<>();
 
+
+    @Override
+    public void onViewCreatedBase() {
+        super.onViewCreatedBase();
+        if (getArguments() != null) topicId = getArguments().getString(TOPIC_ID, "");
+    }
 
     @Override
     public void initAdapter() {
@@ -64,7 +72,7 @@ public class AndroidFragment extends RecyclerBaseFragment implements AndroidCont
 
     @Override
     public void getData() {
-        mPresenter.loadData(pageIndex);
+        mPresenter.loadData(topicId, pageIndex);
     }
 
     @Override
@@ -87,7 +95,6 @@ public class AndroidFragment extends RecyclerBaseFragment implements AndroidCont
     public void showNoData() {
         isNoData = true;
         androidRecyclerViewAdapter.removeFootView();
-        ToastUtils.showSnakbar(R.string.no_data, mRecyclerView);
     }
 
     @Override
@@ -98,7 +105,7 @@ public class AndroidFragment extends RecyclerBaseFragment implements AndroidCont
 
     @Override
     public void showCompletedData() {
-        mSwipeLayout.setRefreshing(false);
+        if (mSwipeLayout != null) mSwipeLayout.setRefreshing(false);
     }
 
     @Override

@@ -24,41 +24,40 @@ import miuyongjun.twentysix.R;
 public class MediaController extends FrameLayout implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
     /**
      * play button
-     * */
+     */
     private ImageView mPlayImg;
     /**
      * play progressbar
-     * */
+     */
     private SeekBar mProgressSeekBar;
     /**
      * play time
-     * */
+     */
     private TextView mTimeTxt;
     /**
      * maximize button
-     * */
+     */
     private ImageView mMaximizeImg;
     /**
      * scale button
-     * */
+     */
     private ImageView mScaleImg;
 
     private MediaControlImpl mMediaControl;
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean isFromUser) {
-        if (isFromUser)
-            mMediaControl.onProgressTurn(ProgressState.DOING, progress);
+        mMediaControl.onProgressTurn(ProgressState.DOING, progress, isFromUser);
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-        mMediaControl.onProgressTurn(ProgressState.START, 0);
+        mMediaControl.onProgressTurn(ProgressState.START, 0,false);
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        mMediaControl.onProgressTurn(ProgressState.STOP, 0);
+        mMediaControl.onProgressTurn(ProgressState.STOP, 0,false);
     }
 
 
@@ -181,7 +180,7 @@ public class MediaController extends FrameLayout implements SeekBar.OnSeekBarCha
 
         void onPageTurn();
 
-        void onProgressTurn(ProgressState state, int progress);
+        void onProgressTurn(ProgressState state, int progress,boolean isFromUser);
 
         void onSelectSrc(int position);
 

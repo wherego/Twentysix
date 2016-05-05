@@ -30,8 +30,9 @@ public class AndroidRepository {
     }
 
 
-    public void getArticleData(Context context, int pageIndex,LoadAndroidDataCallback callback) {
+    public void getArticleData(Context context, String topicId, int pageIndex, LoadAndroidDataCallback callback) {
         BmobQuery<Article> bmobQuery = new BmobQuery<>();
+        if (topicId != null) bmobQuery.addWhereEqualTo("topicId", topicId);
         bmobQuery.setSkip(Constant.PAGE_SIZE * (pageIndex - 1));
         bmobQuery.setLimit(Constant.PAGE_SIZE * pageIndex);
         bmobQuery.order("-createdAt");
