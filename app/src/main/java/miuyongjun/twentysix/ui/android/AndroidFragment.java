@@ -26,7 +26,7 @@ import miuyongjun.twentysix.utils.ToastUtils;
 public class AndroidFragment extends RecyclerBaseFragment implements AndroidContract.View {
 
     public final static String TOPIC_ID = "topic_id";
-    String topicId;
+    private String topicId;
     private AndroidContract.Presenter mPresenter;
 
     AndroidRecyclerViewAdapter androidRecyclerViewAdapter;
@@ -117,5 +117,11 @@ public class AndroidFragment extends RecyclerBaseFragment implements AndroidCont
     @Override
     public void setPresenter(AndroidContract.Presenter presenter) {
         mPresenter = presenter;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.unSubscribe();
     }
 }

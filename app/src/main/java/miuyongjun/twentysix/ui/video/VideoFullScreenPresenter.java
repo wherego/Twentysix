@@ -15,14 +15,15 @@ public class VideoFullScreenPresenter implements VideoFullScreenContract.Present
     }
 
 
-    @Override
-    public void start() {
-
-    }
 
 
     @Override
     public void loadData() {
+
+    }
+
+    @Override
+    public void unSubscribe() {
 
     }
 }

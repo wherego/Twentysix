@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 23
@@ -31,9 +32,12 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
 
-    compile 'com.github.ctiao:DanmakuFlameMaster:0.4.5'
+    apt 'com.google.dagger:dagger-compiler:2.0.2' //指定注解处理器
+    compile 'com.google.dagger:dagger:2.0.2'  //dagger公用api
+    provided 'org.glassfish:javax.annotation:10.0-b28'  //添加android缺失的部分javax注解
 
-    compile 'com.android.support:preference-v7:23.0.1'
+    compile 'com.github.ctiao:DanmakuFlameMaster:0.4.5'
+    compile 'com.android.support:preference-v7:23.3.0'
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.5.1'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.5.1'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.5.1'

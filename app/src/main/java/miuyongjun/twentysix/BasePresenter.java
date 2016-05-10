@@ -7,6 +7,6 @@ package miuyongjun.twentysix;
  */
 public interface BasePresenter {
 
-    void start();
+    void unSubscribe();
 
 }
