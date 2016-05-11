@@ -17,7 +17,8 @@ import butterknife.ButterKnife;
 import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.common.CommonFragmentPagerAdapter;
 import miuyongjun.twentysix.ui.android.AndroidFragment;
-import miuyongjun.twentysix.ui.android.AndroidPresenter;
+import miuyongjun.twentysix.ui.android.AndroidPresenterModule;
+import miuyongjun.twentysix.ui.android.DaggerAndroidComponent;
 import miuyongjun.twentysix.ui.girls.GirlsFragment;
 import miuyongjun.twentysix.ui.specialtopic.SpecialTopicFragment;
 
@@ -34,8 +35,6 @@ public class HomeFragment extends Fragment {
     ViewPager tabViewPager;
     private List<Fragment> mFragmentList;
     String[] tabTitles;
-
-    private AndroidPresenter androidPresenter;
 
 
     @Override
@@ -65,7 +64,9 @@ public class HomeFragment extends Fragment {
         mFragmentList.add(girlsFragment);
         mAdapter = new CommonFragmentPagerAdapter(getChildFragmentManager(), tabTitles, mFragmentList);
         tabViewPager.setAdapter(mAdapter);
-        androidPresenter = new AndroidPresenter(androidFragment);
+        DaggerAndroidComponent.builder()
+                .androidPresenterModule(new AndroidPresenterModule(androidFragment)).build()
+                .getAndroidPresenter();
     }
 
 

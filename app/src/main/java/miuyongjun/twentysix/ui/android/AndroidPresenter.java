@@ -1,5 +1,7 @@
 package miuyongjun.twentysix.ui.android;
 
+import javax.inject.Inject;
+
 import miuyongjun.twentysix.common.Constant;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -14,11 +16,13 @@ public class AndroidPresenter implements AndroidContract.Presenter {
     private final AndroidContract.View mAndroidView;
     private CompositeSubscription mSubscriptions;
 
+    @Inject
     public AndroidPresenter(AndroidContract.View mAndroidView) {
         this.mAndroidView = mAndroidView;
         mSubscriptions = new CompositeSubscription();
         mAndroidView.setPresenter(this);
     }
+
 
     @Override
     public void loadData(String topicId, int pageIndex) {
