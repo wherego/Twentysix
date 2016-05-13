@@ -31,6 +31,8 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    //leakCanary
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
 
     // Dagger dependencies
     apt 'com.google.dagger:dagger-compiler:2.0.2'

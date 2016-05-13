@@ -24,7 +24,7 @@ import miuyongjun.twentysix.ui.girls.GirlsFragment;
  * 　　　　 　┃┫┫　┃┫┫
  * 　　　　    　┗┻┛　┗┻┛
  */
-public class GankFragment extends Fragment {
+public class GankFragment extends Fragment{
     CommonFragmentPagerAdapter mAdapter;
     @Bind(R.id.tabLayout)
     TabLayout tabLayout;
@@ -66,6 +66,9 @@ public class GankFragment extends Fragment {
             bundle.putString(GankListFragment.EXTRA_GANK_TYPE, tabTitles[i]);
             gankListFragment.setArguments(bundle);
             mFragmentList.add(gankListFragment);
+            DaggerGankComponent.builder()
+                    .gankPresenterModule(new GankPresenterModule(gankListFragment)).build()
+                    .getGankPresenter();
         }
     }
 

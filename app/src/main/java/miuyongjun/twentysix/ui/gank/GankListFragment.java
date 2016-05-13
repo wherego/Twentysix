@@ -1,5 +1,6 @@
 package miuyongjun.twentysix.ui.gank;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import miuyongjun.twentysix.adapter.GankDetailAdapter;
-import miuyongjun.twentysix.bean.gank.GankBaseEntity;
 import miuyongjun.twentysix.bean.gank.GankEntity;
-import miuyongjun.twentysix.common.Constant;
-import miuyongjun.twentysix.common.retrofit.RetrofitUtil;
 import miuyongjun.twentysix.ui.activity.WebActivity;
 import miuyongjun.twentysix.ui.base.RecyclerBaseFragment;
 
@@ -21,18 +19,18 @@ import miuyongjun.twentysix.ui.base.RecyclerBaseFragment;
  * 　　　　    　┃┫┫　┃┫┫
  * 　　　　    　┗┻┛　┗┻┛
  */
-public class GankListFragment extends RecyclerBaseFragment {
+public class GankListFragment extends RecyclerBaseFragment implements GankContract.View {
     public static final String EXTRA_GANK_TYPE = "gank_type";
     String type;
     GankDetailAdapter gankDetailAdapter;
     List<GankEntity> gankEntityList = new ArrayList<>();
+    private GankContract.Presenter mPresenter;
 
 
     private void parseArguments() {
         Bundle bundle = getArguments();
         type = bundle.getString(EXTRA_GANK_TYPE);
     }
-
 
 
     @Override
@@ -53,11 +51,7 @@ public class GankListFragment extends RecyclerBaseFragment {
 
     @Override
     public void getData() {
-        RetrofitUtil.getGankApi(type, pageIndex)
-                .filter(this::handleFilter)
-                .map(gankBaseEntity -> gankBaseEntity.gankEntityList)
-                .subscribe(this::handleListData,
-                        this::onError, () -> mSwipeLayout.setRefreshing(false));
+        mPresenter.loadData(type, pageIndex);
     }
 
     @Override
@@ -75,21 +69,43 @@ public class GankListFragment extends RecyclerBaseFragment {
         return gankEntityList.get(position).desc;
     }
 
-    private boolean handleFilter(GankBaseEntity gankBaseEntity) {
-        if (gankBaseEntity.gankEntityList == null) {
-            handleListData(null);
-            return false;
-        }
-        return true;
+
+    @Override
+    public Context getContext() {
+        return getActivity();
     }
 
-    private void handleListData(List<GankEntity> gankEntities) {
-        if (gankEntities == null || gankEntities.size() < Constant.PAGE_SIZE) {
-            isNoData = true;
-            gankDetailAdapter.removeFootView();
-            return;
-        }
+    @Override
+    public void showNoData() {
+        isNoData = true;
+        gankDetailAdapter.removeFootView();
+    }
+
+    @Override
+    public void showData(List<GankEntity> gankEntities) {
         gankEntityList.addAll(gankEntities);
         gankDetailAdapter.notifyDataSetChanged(gankEntityList);
+    }
+
+    @Override
+    public void showCompletedData() {
+        if (mSwipeLayout != null) mSwipeLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void showLoadErrorData() {
+        isNoData = true;
+        gankDetailAdapter.removeFootView();
+    }
+
+    @Override
+    public void setPresenter(GankContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.unSubscribe();
     }
 }

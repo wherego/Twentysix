@@ -1,5 +1,6 @@
 package miuyongjun.twentysix.ui.gankdetail;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
@@ -25,7 +26,6 @@ import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.bean.gank.GankDateEntity;
 import miuyongjun.twentysix.bean.gank.GankEntity;
 import miuyongjun.twentysix.common.CommonFragmentPagerAdapter;
-import miuyongjun.twentysix.common.retrofit.RetrofitUtil;
 import miuyongjun.twentysix.utils.DateUtils;
 import miuyongjun.twentysix.utils.ToastUtils;
 import miuyongjun.twentysix.widget.RatioImageView;
@@ -35,7 +35,7 @@ import miuyongjun.twentysix.widget.RatioImageView;
  * 　　　　    　┃┫┫　┃┫┫
  * 　　　　    　┗┻┛　┗┻┛
  */
-public class GankDetailActivity extends AppCompatActivity {
+public class GankDetailActivity extends AppCompatActivity implements GankDetailContract.View {
     public static final String EXTRA_GANK_DATE = "gank_date";
     public static final String EXTRA_GANK_IMAGE_URL = "gank_url";
     Date mGankDate;
@@ -55,6 +55,7 @@ public class GankDetailActivity extends AppCompatActivity {
     private List<Fragment> mFragmentList;
     String[] tabTitles;
     CommonFragmentPagerAdapter mAdapter;
+    GankDetailContract.Presenter gankDetailPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,10 @@ public class GankDetailActivity extends AppCompatActivity {
     }
 
     private void initData() {
+        gankDetailPresenter = new GankDetailPresenter(this);
+//        DaggerGankDetailComponent.builder()
+//                .gankDetailPresenterModule(new GankDetailPresenterModule(this))
+//                .build().getGankDetailPresenter();
         Picasso.with(this).load(imageUrl).into(iv_shared_transition);
         tabTitles = getResources().getStringArray(R.array.gank_detail_list);
         mFragmentList = new ArrayList<>();
@@ -79,12 +84,13 @@ public class GankDetailActivity extends AppCompatActivity {
     private void getData() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(mGankDate);
-        RetrofitUtil.getGankBaseApi(calendar.get(Calendar.YEAR), (calendar.get(Calendar.MONTH) + 1), calendar.get(Calendar.DAY_OF_MONTH))
-                .filter(gankDateBaseEntity -> gankDateBaseEntity.results != null)
-                .map(gankDateBaseEntity -> gankDateBaseEntity.results)
-                .subscribe(this::addFragment,
-                        throwable -> ToastUtils.showSnakbar(R.string.retry, tabLayout),
-                        this::initViewPager);
+        gankDetailPresenter.loadData(calendar);
+//        RetrofitUtil.getGankBaseApi(calendar.get(Calendar.YEAR), (calendar.get(Calendar.MONTH) + 1), calendar.get(Calendar.DAY_OF_MONTH))
+//                .filter(gankDateBaseEntity -> gankDateBaseEntity.results != null)
+//                .map(gankDateBaseEntity -> gankDateBaseEntity.results)
+//                .subscribe(this::addFragment,
+//                        throwable -> ToastUtils.showSnakbar(R.string.retry, tabLayout),
+//                        this::initViewPager);
     }
 
     private void addFragment(GankDateEntity gankDateEntity) {
@@ -125,4 +131,46 @@ public class GankDetailActivity extends AppCompatActivity {
         super.onDestroy();
         ButterKnife.unbind(this);
     }
+
+    @Override
+    public void showNoData() {
+
+    }
+
+    @Override
+    public void showData(GankDateEntity gankDateEntity) {
+        List<List<GankEntity>> listList = new ArrayList<>();
+        listList.add(gankDateEntity.androidList);
+        listList.add(gankDateEntity.iosList);
+        listList.add(gankDateEntity.tuozhangList);
+        for (int i = 0; i < listList.size(); i++) {
+            GankDetailFragment gankDetailFragment = new GankDetailFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(GankDetailFragment.GANK_LIST, (Serializable) listList.get(i));
+            gankDetailFragment.setArguments(bundle);
+            mFragmentList.add(gankDetailFragment);
+        }
+    }
+
+    @Override
+    public void showCompletedData() {
+        progressBar.setVisibility(View.GONE);
+        initViewPager();
+    }
+
+    @Override
+    public void showLoadErrorData() {
+        ToastUtils.showSnakbar(R.string.retry, tabLayout);
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public void setPresenter(GankDetailContract.Presenter presenter) {
+        gankDetailPresenter = presenter;
+    }
+
 }
