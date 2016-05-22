@@ -31,7 +31,7 @@ public class MVideoPlayer extends RelativeLayout {
 
     private Context mContext;
     private VideoView videoView;
-    private MediaController mMediaController;
+    private CustomMediaController mMediaController;
     private Timer mUpdateTimer;
     private VideoPlayCallbackImpl mVideoPlayCallback;
 
@@ -40,8 +40,7 @@ public class MVideoPlayer extends RelativeLayout {
     private Video mNowPlayVideo;
 
 
-
-    private MediaController.PageType mCurrPageType = MediaController.PageType.SCALE;
+    private CustomMediaController.PageType mCurrPageType = CustomMediaController.PageType.SCALE;
 
     /**
      * automatically hide the control bar
@@ -70,7 +69,7 @@ public class MVideoPlayer extends RelativeLayout {
         mContext = context;
         View.inflate(context, R.layout.video_player_layout, this);
         videoView = (VideoView) findViewById(R.id.video_view);
-        mMediaController = (MediaController) findViewById(R.id.controller);
+        mMediaController = (CustomMediaController) findViewById(R.id.media_controller);
         mProgressBarView = findViewById(R.id.progressbar);
         mCloseBtnView = findViewById(R.id.video_close_view);
 
@@ -105,23 +104,11 @@ public class MVideoPlayer extends RelativeLayout {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             showOrHideController();
         }
-        return mCurrPageType == MediaController.PageType.MAXIMIZE;
+        return mCurrPageType == CustomMediaController.PageType.MAXIMIZE;
     };
 
-    private MediaController.MediaControlImpl mMediaControl = new MediaController.MediaControlImpl() {
-        @Override
-        public void alwaysShowController() {
-            MVideoPlayer.this.alwaysShowController();
-        }
+    private CustomMediaController.MediaControlImpl mMediaControl = new CustomMediaController.MediaControlImpl() {
 
-        @Override
-        public void onSelectSrc(int position) {
-            loadAndPlay(mNowPlayVideo, 0);
-        }
-
-        @Override
-        public void onSelectFormat(int position) {
-        }
 
         @Override
         public void onPlayTurn() {
@@ -138,10 +125,10 @@ public class MVideoPlayer extends RelativeLayout {
         }
 
         @Override
-        public void onProgressTurn(MediaController.ProgressState state, int progress,boolean isFromUser) {
-            if (state.equals(MediaController.ProgressState.START)) {
+        public void onProgressTurn(CustomMediaController.ProgressState state, int progress, boolean isFromUser) {
+            if (state.equals(CustomMediaController.ProgressState.START)) {
                 mHandler.removeMessages(MSG_HIDE_CONTROLLER);
-            } else if (state.equals(MediaController.ProgressState.STOP)) {
+            } else if (state.equals(CustomMediaController.ProgressState.STOP)) {
                 resetHideTimer();
             } else {
                 int time = progress * videoView.getDuration() / 100;
@@ -202,7 +189,7 @@ public class MVideoPlayer extends RelativeLayout {
         return videoView;
     }
 
-    public void setPageType(MediaController.PageType pageType) {
+    public void setPageType(CustomMediaController.PageType pageType) {
         mMediaController.setPageType(pageType);
         mCurrPageType = pageType;
     }
@@ -218,21 +205,21 @@ public class MVideoPlayer extends RelativeLayout {
 
     public void pausePlay(boolean isShowController) {
         videoView.pause();
-        mMediaController.setPlayState(MediaController.PlayState.PAUSE);
+        mMediaController.setPlayState(CustomMediaController.PlayState.PAUSE);
         stopHideTimer(isShowController);
     }
 
 
     public void goOnPlay() {
         videoView.start();
-        mMediaController.setPlayState(MediaController.PlayState.PLAY);
+        mMediaController.setPlayState(CustomMediaController.PlayState.PLAY);
         resetHideTimer();
         resetUpdateTimer();
     }
 
 
     public void close() {
-        mMediaController.setPlayState(MediaController.PlayState.PAUSE);
+        mMediaController.setPlayState(CustomMediaController.PlayState.PAUSE);
         stopHideTimer(true);
         stopUpdateTimer();
         videoView.pause();
@@ -276,7 +263,7 @@ public class MVideoPlayer extends RelativeLayout {
         if (seekTime > 0) {
             videoView.seekTo(seekTime);
         }
-        mMediaController.setPlayState(MediaController.PlayState.PLAY);
+        mMediaController.setPlayState(CustomMediaController.PlayState.PLAY);
     }
 
 

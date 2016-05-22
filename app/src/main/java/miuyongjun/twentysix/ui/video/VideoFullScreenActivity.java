@@ -31,9 +31,8 @@ import master.flame.danmaku.danmaku.parser.IDataSource;
 import master.flame.danmaku.danmaku.parser.android.BiliDanmukuParser;
 import master.flame.danmaku.ui.widget.DanmakuView;
 import miuyongjun.twentysix.R;
-import miuyongjun.twentysix.bean.bmob.Video;
-import miuyongjun.twentysix.widget.video.MVideoPlayer;
-import miuyongjun.twentysix.widget.video.MediaController;
+import miuyongjun.twentysix.widget.media.IjkVideoView;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by miaoyongjun on 2016/5/5.
@@ -43,10 +42,11 @@ import miuyongjun.twentysix.widget.video.MediaController;
 
 public class VideoFullScreenActivity extends AppCompatActivity implements VideoFullScreenContract.View {
 
-    public final static String VIDEO_OBJECT = "video_object";
-    public final static String SEEK_TIME = "seek_time";
     private DanmakuContext mContext;
     private BaseDanmakuParser mParser;
+    private boolean mBackPressed;
+    private String mVideoPath;
+    private String mVideoTitle;
     @Bind(R.id.sv_danmaku)
     DanmakuView mDanmakuView;
     @Bind(R.id.btn_hide)
@@ -54,11 +54,8 @@ public class VideoFullScreenActivity extends AppCompatActivity implements VideoF
     @Bind(R.id.btn_show)
     Button btnShow;
 
-    private Video video;
-    private int seekTime;
 
-    @Bind(R.id.video_player)
-    MVideoPlayer mVideoPlayer;
+    IjkVideoView mVideoView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,25 +67,36 @@ public class VideoFullScreenActivity extends AppCompatActivity implements VideoF
         LoadData();
     }
 
-    public static Intent newIntent(Context context, Video video, int seekTime) {
+    public static Intent newIntent(Context context, String videoPath, String videoTitle) {
         Intent intent = new Intent(context, VideoFullScreenActivity.class);
-        intent.putExtra(VIDEO_OBJECT, video);
-        intent.putExtra(SEEK_TIME, seekTime);
+        intent.putExtra("videoPath", videoPath);
+        intent.putExtra("videoTitle", videoTitle);
         return intent;
     }
 
+    public static void intentTo(Context context, String videoPath, String videoTitle) {
+        context.startActivity(newIntent(context, videoPath, videoTitle));
+    }
+
     private void parseIntent() {
-        video = (Video) getIntent().getSerializableExtra(VIDEO_OBJECT);
-        seekTime = getIntent().getIntExtra(SEEK_TIME, 0);
+        mVideoPath = getIntent().getStringExtra("videoPath");
+        mVideoTitle = getIntent().getStringExtra("videoTitle");
     }
 
     private void LoadData() {
-        mVideoPlayer.getCloseBtnView().setVisibility(View.GONE);
-        mVideoPlayer.setVideoPlayCallback(mVideoPlayCallback);
-        mVideoPlayer.setVisibility(View.VISIBLE);
-        mVideoPlayer.setPageType(MediaController.PageType.SCALE);
-        mVideoPlayer.setAutoHideController(true);
-        mVideoPlayer.loadVideo(video, seekTime);
+        IjkMediaPlayer.loadLibrariesOnce(null);
+        IjkMediaPlayer.native_profileBegin("libijkplayer.so");
+        mVideoView = (IjkVideoView) findViewById(R.id.video_view);
+        mVideoView.tv_title.setText(mVideoTitle);
+        mVideoView.mCloseBtnView.setVisibility(View.GONE);
+        mVideoView.mediaController.mScaleImg.setVisibility(View.GONE);
+        if (mVideoPath != null)
+            mVideoView.setVideoPath(mVideoPath);
+        else {
+            finish();
+            return;
+        }
+        mVideoView.start();
         initDanmaKu();
     }
 
@@ -144,6 +152,7 @@ public class VideoFullScreenActivity extends AppCompatActivity implements VideoF
             mDanmakuView.prepare(mParser, mContext);
             mDanmakuView.showFPS(true);
             mDanmakuView.enableDanmakuDrawingCache(true);
+            mDanmakuView.hide();
         }
     }
 
@@ -173,24 +182,6 @@ public class VideoFullScreenActivity extends AppCompatActivity implements VideoF
 
     }
 
-    private MVideoPlayer.VideoPlayCallbackImpl mVideoPlayCallback = new MVideoPlayer.VideoPlayCallbackImpl() {
-        @Override
-        public void onCloseVideo() {
-
-        }
-
-        @Override
-        public void onSwitchPageType() {
-            mVideoPlayer.close();
-            finish();
-        }
-
-        @Override
-        public void onPlayFinish() {
-            mVideoPlayer.close();
-            finish();
-        }
-    };
 
     @Override
     public void showLoadErrorData() {
@@ -237,20 +228,33 @@ public class VideoFullScreenActivity extends AppCompatActivity implements VideoF
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
-        if (mDanmakuView != null) {
-            // dont forget release!
-            mDanmakuView.release();
-            mDanmakuView = null;
-        }
+        finishVideoView();
+    }
+
+    @Override
+    protected void onStop() {
+        finishVideoView();
+        super.onStop();
     }
 
     @Override
     public void onBackPressed() {
+        mBackPressed = true;
         super.onBackPressed();
+    }
+
+    private void finishVideoView() {
         if (mDanmakuView != null) {
-            // dont forget release!
             mDanmakuView.release();
             mDanmakuView = null;
         }
+        if (mBackPressed || !mVideoView.isBackgroundPlayEnabled()) {
+            mVideoView.stopPlayback();
+            mVideoView.release(true);
+            mVideoView.stopBackgroundPlay();
+        } else {
+            mVideoView.enterBackground();
+        }
+        IjkMediaPlayer.native_profileEnd();
     }
 }

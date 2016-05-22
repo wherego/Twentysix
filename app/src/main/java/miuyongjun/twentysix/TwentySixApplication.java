@@ -3,6 +3,8 @@ package miuyongjun.twentysix;
 import android.app.Application;
 import android.content.Context;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
 import miuyongjun.twentysix.common.Constant;
@@ -33,6 +35,7 @@ public class TwentySixApplication extends Application {
         Bmob.initialize(this, Constant.BOMB_APPLICATION_ID);
         ToastUtils.register(this);
         CrashHandler.getInstance().init(sContext);
+        LeakCanary.install(this);
     }
 
     public static TwentySixApplication getApplication() {

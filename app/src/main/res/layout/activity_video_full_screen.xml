@@ -7,13 +7,6 @@
     android:layout_gravity="center"
     android:orientation="vertical">
 
-    <miuyongjun.twentysix.widget.video.MVideoPlayer
-        android:id="@+id/video_player"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:transitionName="@string/transition_name"/>
-
     <master.flame.danmaku.ui.widget.DanmakuView
         android:id="@+id/sv_danmaku"
         android:layout_width="match_parent"
@@ -22,6 +15,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_gravity="bottom">
 
         <Button
@@ -38,5 +32,9 @@
             android:layout_weight="1"
             android:text="显示"/>
     </LinearLayout>
-
+    <miuyongjun.twentysix.widget.media.IjkVideoView
+        android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"/>
 </FrameLayout>

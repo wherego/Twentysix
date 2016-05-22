@@ -21,7 +21,7 @@ import miuyongjun.twentysix.R;
  * 　　　　    　┗┻┛　┗┻┛
  */
 
-public class MediaController extends FrameLayout implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
+public class CustomMediaController extends FrameLayout implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
     /**
      * play button
      */
@@ -41,7 +41,7 @@ public class MediaController extends FrameLayout implements SeekBar.OnSeekBarCha
     /**
      * scale button
      */
-    private ImageView mScaleImg;
+    public ImageView mScaleImg;
 
     private MediaControlImpl mMediaControl;
 
@@ -104,17 +104,17 @@ public class MediaController extends FrameLayout implements SeekBar.OnSeekBarCha
         mMediaControl = mediaControl;
     }
 
-    public MediaController(Context context) {
+    public CustomMediaController(Context context) {
         super(context);
         initView(context);
     }
 
-    public MediaController(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomMediaController(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context);
     }
 
-    public MediaController(Context context, AttributeSet attrs) {
+    public CustomMediaController(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context);
     }
@@ -181,12 +181,6 @@ public class MediaController extends FrameLayout implements SeekBar.OnSeekBarCha
         void onPageTurn();
 
         void onProgressTurn(ProgressState state, int progress,boolean isFromUser);
-
-        void onSelectSrc(int position);
-
-        void onSelectFormat(int position);
-
-        void alwaysShowController();
     }
 
 }

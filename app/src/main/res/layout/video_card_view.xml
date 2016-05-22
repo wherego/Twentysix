@@ -38,12 +38,11 @@
                 android:layout_gravity="center"
                 android:src="@mipmap/ic_av_play_circle_outline"/>
 
-            <miuyongjun.twentysix.widget.video.MVideoPlayer
+            <miuyongjun.twentysix.widget.media.IjkVideoView
                 android:id="@+id/video_player"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:transitionName="@string/transition_name"
                 android:visibility="gone"/>
 
         </FrameLayout>

@@ -1,6 +1,5 @@
 package miuyongjun.twentysix.ui.video;
 
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -17,7 +16,8 @@ import miuyongjun.twentysix.bean.bmob.Video;
 import miuyongjun.twentysix.common.Constant;
 import miuyongjun.twentysix.ui.base.RecyclerBaseFragment;
 import miuyongjun.twentysix.utils.ToastUtils;
-import miuyongjun.twentysix.widget.video.MVideoPlayer;
+import miuyongjun.twentysix.widget.media.IjkVideoView;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by miaoyongjun on 16/4/30.
@@ -25,13 +25,13 @@ import miuyongjun.twentysix.widget.video.MVideoPlayer;
  * 　　　　    　┗┻┛　┗┻┛
  */
 public class VideoFragment extends RecyclerBaseFragment {
-    MVideoPlayer mVideoPlayer;
+    IjkVideoView mVideoPlayer;
     View imageView;
     int currentPosition = 0;
     VideoRecyclerViewAdapter spRecyclerViewAdapter;
     List<Video> videoEntityList = new ArrayList<>();
 
-    private MVideoPlayer.VideoPlayCallbackImpl mVideoPlayCallback = new MVideoPlayer.VideoPlayCallbackImpl() {
+    private IjkVideoView.VideoPlayCallbackImpl mVideoPlayCallback = new IjkVideoView.VideoPlayCallbackImpl() {
         @Override
         public void onCloseVideo() {
             CloseVideo();
@@ -40,9 +40,9 @@ public class VideoFragment extends RecyclerBaseFragment {
         @Override
         public void onSwitchPageType() {
             CloseVideo();
-            Intent intent = VideoFullScreenActivity.newIntent(
-                    getActivity(), videoEntityList.get(currentPosition), mVideoPlayer.getCurrentPosition());
-            startActivity(intent);
+            String name = videoEntityList.get(currentPosition).title;
+            String url = videoEntityList.get(currentPosition).videoUrl;
+            VideoFullScreenActivity.intentTo(getActivity(), url, name);
         }
 
         @Override
@@ -52,7 +52,7 @@ public class VideoFragment extends RecyclerBaseFragment {
     };
 
     private void CloseVideo() {
-        mVideoPlayer.close();
+        mVideoPlayer.release(true);
         imageView.setVisibility(View.VISIBLE);
         mVideoPlayer.setVisibility(View.GONE);
     }
@@ -69,6 +69,8 @@ public class VideoFragment extends RecyclerBaseFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(spRecyclerViewAdapter);
         spRecyclerViewAdapter.setOnItemClickListener(this);
+        IjkMediaPlayer.loadLibrariesOnce(null);
+        IjkMediaPlayer.native_profileBegin("libijkplayer.so");
     }
 
     @Override
@@ -76,13 +78,19 @@ public class VideoFragment extends RecyclerBaseFragment {
         if (v instanceof ImageView) {
             currentPosition = position;
             if (mVideoPlayer != null) CloseVideo();
-            mVideoPlayer = (MVideoPlayer) ((FrameLayout) v.getParent()).getChildAt(2);
+            mVideoPlayer = (IjkVideoView) ((FrameLayout) v.getParent()).getChildAt(2);
             imageView = v;
             v.setVisibility(View.GONE);
             mVideoPlayer.setVideoPlayCallback(mVideoPlayCallback);
             mVideoPlayer.setVisibility(View.VISIBLE);
-            mVideoPlayer.setAutoHideController(true);
-            mVideoPlayer.loadVideo(videoEntityList.get(position), 0);
+            mVideoPlayer.tv_title.setText(videoEntityList.get(position).title);
+            if (videoEntityList.get(position).videoUrl != null) {
+                mVideoPlayer.setVideoPath(videoEntityList.get(position).videoUrl);
+                mVideoPlayer.start();
+            } else {
+                ToastUtils.showSnakbar(R.string.cant_find_video, mRecyclerView);
+            }
+
         }
     }
 
