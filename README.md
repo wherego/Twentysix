@@ -1,6 +1,8 @@
 # Twentysix
 Material Design , RxJava & Retrofit , dagger , MVP , video player based on FFmpeg n3.0
 
+APP只做了一半......暂时搁置
+
 ![enter image description here](https://github.com/miaoyongjun/AndroidTips/blob/master/images/QQ%E6%88%AA%E5%9B%BE20160622113100.png?raw=true)  
 
 ![enter image description here](https://github.com/miaoyongjun/AndroidTips/blob/master/images/QQ%E6%88%AA%E5%9B%BE20160622113137.png?raw=true)
