@@ -17,6 +17,10 @@ import butterknife.ButterKnife;
 import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.common.CommonFragmentPagerAdapter;
 import miuyongjun.twentysix.common.Constant;
+import miuyongjun.twentysix.di.components.DaggerGankComponent;
+import miuyongjun.twentysix.di.components.DaggerGirlsComponent;
+import miuyongjun.twentysix.di.modules.GankPresenterModule;
+import miuyongjun.twentysix.di.modules.GirlsPresenterModule;
 import miuyongjun.twentysix.ui.girls.GirlsFragment;
 
 /**
@@ -55,20 +59,24 @@ public class GankFragment extends Fragment{
                 Constant.GANK_XIUXI, Constant.GANK_TUOZHANG, Constant.GANK_QIANDUAN
         };
         mFragmentList = new ArrayList<>();
-        for (int i = 0; i < tabTitles.length; i++) {
-            if (tabTitles[i].equals(Constant.GANK_FULI)) {
+        for (String tabTitle : tabTitles) {
+            if (tabTitle.equals(Constant.GANK_FULI)) {
                 GirlsFragment girlsFragment = new GirlsFragment(true);
+                DaggerGirlsComponent.builder()
+                        .girlsPresenterModule(new GirlsPresenterModule(girlsFragment)).build()
+                        .getGirlsPresenter();
                 mFragmentList.add(girlsFragment);
                 continue;
             }
             GankListFragment gankListFragment = new GankListFragment();
             Bundle bundle = new Bundle();
-            bundle.putString(GankListFragment.EXTRA_GANK_TYPE, tabTitles[i]);
+            bundle.putString(GankListFragment.EXTRA_GANK_TYPE, tabTitle);
             gankListFragment.setArguments(bundle);
             mFragmentList.add(gankListFragment);
             DaggerGankComponent.builder()
                     .gankPresenterModule(new GankPresenterModule(gankListFragment)).build()
                     .getGankPresenter();
+
         }
     }
 

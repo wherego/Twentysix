@@ -1,14 +1,15 @@
 package miuyongjun.twentysix;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.squareup.leakcanary.LeakCanary;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
 import miuyongjun.twentysix.common.Constant;
-import miuyongjun.twentysix.utils.CrashHandler;
+import miuyongjun.twentysix.di.components.ApplicationComponent;
+import miuyongjun.twentysix.di.components.DaggerApplicationComponent;
+import miuyongjun.twentysix.di.modules.ApplicationModule;
 import miuyongjun.twentysix.utils.ToastUtils;
 
 /**
@@ -17,14 +18,12 @@ import miuyongjun.twentysix.utils.ToastUtils;
  * 　　　　    　┗┻┛　┗┻┛
  */
 public class TwentySixApplication extends Application {
-    public static Context sContext;
-    private static TwentySixApplication mInstance;
+    public static ApplicationComponent applicationComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        sContext = this;
-        mInstance = this;
+        applicationComponent = DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(getApplicationContext())).build();
         BmobConfig config = new BmobConfig.Builder()
                 //请求超时时间（单位为秒）：默认15s
                 .setConnectTimeout(30)
@@ -34,12 +33,12 @@ public class TwentySixApplication extends Application {
         Bmob.getInstance().initConfig(config);
         Bmob.initialize(this, Constant.BOMB_APPLICATION_ID);
         ToastUtils.register(this);
-        CrashHandler.getInstance().init(sContext);
+        applicationComponent.getCrashHandler().init(getApplicationContext());
         LeakCanary.install(this);
     }
 
     public static TwentySixApplication getApplication() {
-        return mInstance;
+        return (TwentySixApplication) applicationComponent.getContext();
     }
 
     @Override

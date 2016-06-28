@@ -17,23 +17,15 @@ import miuyongjun.twentysix.utils.task.Task;
 import miuyongjun.twentysix.utils.task.TaskManager;
 
 public class CrashHandler implements UncaughtExceptionHandler {
-	public static final String TAG = "CrashHandler";
-	// CrashHandler实例
-	private static CrashHandler INSTANCE = new CrashHandler();
 	// 程序的Context对象
 	private TwentySixApplication ztApplication;
 	// 用于格式化日期,作为日志文件名的一部分
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.CHINA);
 	// 系统默认的UncaughtException处理类
 	private UncaughtExceptionHandler mDefaultHandler;
-	/** 保证只有一个CrashHandler实例 */
-	private CrashHandler() {
+	public CrashHandler() {
 	}
 
-	/** 获取CrashHandler实例 ,单例模式 */
-	public static CrashHandler getInstance() {
-		return INSTANCE;
-	}
 
 	/**
 	 * 初始化

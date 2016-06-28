@@ -11,15 +11,10 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.adapter.GirlsRecyclerViewAdapter;
-import miuyongjun.twentysix.bean.gank.GankBaseEntity;
 import miuyongjun.twentysix.bean.gank.GankEntity;
-import miuyongjun.twentysix.common.Constant;
-import miuyongjun.twentysix.common.retrofit.RetrofitUtil;
 import miuyongjun.twentysix.ui.base.RecyclerBaseFragment;
 import miuyongjun.twentysix.ui.gankdetail.GankDetailActivity;
-import miuyongjun.twentysix.utils.ToastUtils;
 import miuyongjun.twentysix.utils.UIUtils;
 import miuyongjun.twentysix.widget.RecyclerSpanSizeLookup;
 
@@ -29,10 +24,11 @@ import miuyongjun.twentysix.widget.RecyclerSpanSizeLookup;
  * 　　　　    　┗┻┛　┗┻┛
  */
 @SuppressLint("ValidFragment")
-public class GirlsFragment extends RecyclerBaseFragment {
+public class GirlsFragment extends RecyclerBaseFragment implements GirlsContract.View {
     boolean isLinearManager;
     GirlsRecyclerViewAdapter girlsRecyclerViewAdapter;
     List<GankEntity> girlsEntityList = new ArrayList<>();
+    private GirlsContract.Presenter mPresenter;
 
     public GirlsFragment() {
 
@@ -45,14 +41,7 @@ public class GirlsFragment extends RecyclerBaseFragment {
 
     @Override
     public void getData() {
-        RetrofitUtil.getGirlsApi(Constant.GANK_FULI, pageIndex)
-                .filter(this::handleFilter)
-                .map(gankBaseEntity -> gankBaseEntity.gankEntityList)
-                .subscribe(this::handleListData, this::onError, () -> {
-                    if (mSwipeLayout != null) {
-                        mSwipeLayout.setRefreshing(false);
-                    }
-                });
+        mPresenter.loadData(pageIndex);
     }
 
     @Override
@@ -95,25 +84,38 @@ public class GirlsFragment extends RecyclerBaseFragment {
         return girlsEntityList.get(position).desc;
     }
 
-    private boolean handleFilter(GankBaseEntity gankBaseEntity) {
-        if (gankBaseEntity.gankEntityList == null) {
-            handleListData(null);
-            return false;
-        }
-        return true;
+
+    @Override
+    public void showNoData() {
+        isNoData = true;
+        girlsRecyclerViewAdapter.removeFootView();
     }
 
-    private void handleListData(List<GankEntity> girlsEntities) {
-        if (girlsEntities == null) {
-            isNoData = true;
-            girlsRecyclerViewAdapter.removeFootView();
-            return;
-        } else if (girlsEntities.size() < Constant.PAGE_SIZE) {
-            isNoData = true;
-            girlsRecyclerViewAdapter.removeFootView();
-            ToastUtils.showSnakbar(R.string.no_data, mRecyclerView);
-        }
-        girlsEntityList.addAll(girlsEntities);
+    @Override
+    public void showData(List<GankEntity> gankEntities) {
+        girlsEntityList.addAll(gankEntities);
         girlsRecyclerViewAdapter.notifyDataSetChanged(girlsEntityList);
+    }
+
+    @Override
+    public void showCompletedData() {
+        if (mSwipeLayout != null) mSwipeLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void showLoadErrorData() {
+        isNoData = true;
+        girlsRecyclerViewAdapter.removeFootView();
+    }
+
+    @Override
+    public void setPresenter(GirlsContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.unSubscribe();
     }
 }

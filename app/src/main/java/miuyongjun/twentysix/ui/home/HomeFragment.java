@@ -16,9 +16,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import miuyongjun.twentysix.R;
 import miuyongjun.twentysix.common.CommonFragmentPagerAdapter;
+import miuyongjun.twentysix.di.components.DaggerAndroidComponent;
+import miuyongjun.twentysix.di.components.DaggerGirlsComponent;
+import miuyongjun.twentysix.di.components.DaggerTopicComponent;
+import miuyongjun.twentysix.di.modules.AndroidPresenterModule;
+import miuyongjun.twentysix.di.modules.GirlsPresenterModule;
+import miuyongjun.twentysix.di.modules.TopicPresenterModule;
 import miuyongjun.twentysix.ui.android.AndroidFragment;
-import miuyongjun.twentysix.ui.android.AndroidPresenterModule;
-import miuyongjun.twentysix.ui.android.DaggerAndroidComponent;
 import miuyongjun.twentysix.ui.girls.GirlsFragment;
 import miuyongjun.twentysix.ui.specialtopic.SpecialTopicFragment;
 
@@ -67,6 +71,12 @@ public class HomeFragment extends Fragment {
         DaggerAndroidComponent.builder()
                 .androidPresenterModule(new AndroidPresenterModule(androidFragment)).build()
                 .getAndroidPresenter();
+        DaggerGirlsComponent.builder()
+                .girlsPresenterModule(new GirlsPresenterModule(girlsFragment)).build()
+                .getGirlsPresenter();
+        DaggerTopicComponent.builder()
+                .topicPresenterModule(new TopicPresenterModule(specialTopicFragment)).build()
+                .getTopicPresenter();
     }
 
 
